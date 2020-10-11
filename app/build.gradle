@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
+    viewBinding.enabled = true
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
 
