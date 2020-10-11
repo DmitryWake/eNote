@@ -1,15 +1,14 @@
 package com.stgroup.enote
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toolbar
+import androidx.appcompat.app.AppCompatActivity
 import com.stgroup.enote.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var mBinding: ActivityMainBinding
 
-    lateinit var mToolbar: Toolbar
+    lateinit var mToolbar: androidx.appcompat.widget.Toolbar
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,7 +19,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initFields() {
-
+        mToolbar = mBinding.mainToolbar
     }
 
     private fun initFunc() {
