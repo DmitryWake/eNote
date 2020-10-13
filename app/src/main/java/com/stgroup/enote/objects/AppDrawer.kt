@@ -50,4 +50,22 @@ class AppDrawer {
             .build()
     }
 
+    fun disableDrawer() {
+        mDrawer.actionBarDrawerToggle?.isDrawerIndicatorEnabled = false
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+        APP_ACTIVITY.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        APP_ACTIVITY.mToolbar.setNavigationOnClickListener {
+            APP_ACTIVITY.supportFragmentManager.popBackStack()
+        }
+    }
+
+    fun enableDrawer() {
+        APP_ACTIVITY.supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        mDrawer.actionBarDrawerToggle?.isDrawerIndicatorEnabled = true
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+        APP_ACTIVITY.mToolbar.setNavigationOnClickListener {
+            mDrawer.openDrawer()
+        }
+    }
+
 }
