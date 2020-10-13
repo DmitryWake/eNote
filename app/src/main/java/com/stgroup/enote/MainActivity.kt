@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.stgroup.enote.databinding.ActivityMainBinding
 import com.stgroup.enote.objects.AppDrawer
+import com.stgroup.enote.screens.MainMenuFragment
 import com.stgroup.enote.utilities.APP_ACTIVITY
+import com.stgroup.enote.utilities.replaceFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -31,6 +33,7 @@ class MainActivity : AppCompatActivity() {
     private fun initFunc() {
         setSupportActionBar(mToolbar)
         mDrawer.create()
+        replaceFragment(MainMenuFragment(), false)
     }
 }
 
