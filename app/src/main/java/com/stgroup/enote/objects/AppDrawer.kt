@@ -33,18 +33,18 @@ class AppDrawer {
             .withActionBarDrawerToggle(true)
             .withAccountHeader(mHeader)
             .addDrawerItems(
-                PrimaryDrawerItem().withIdentifier(100).withName("Главная")
+                PrimaryDrawerItem().withIdentifier(100).withName(R.string.home_icon)
                     .withIcon(R.drawable.ic_home),
                 DividerDrawerItem(),
-                PrimaryDrawerItem().withIdentifier(200).withName("Корзина")
+                PrimaryDrawerItem().withIdentifier(200).withName(R.string.trash_icon)
                     .withIcon(R.drawable.ic_rubbish),
                 DividerDrawerItem(),
-                PrimaryDrawerItem().withIdentifier(300).withName("Настройки")
+                PrimaryDrawerItem().withIdentifier(300).withName(R.string.settings_icon)
                     .withIcon(R.drawable.ic_settings),
-                SecondaryDrawerItem().withIdentifier(301).withName("Поделиться")
+                SecondaryDrawerItem().withIdentifier(301).withName(R.string.share_icon)
                     .withIcon(R.drawable.ic_share),
                 DividerDrawerItem(),
-                SecondaryDrawerItem().withIdentifier(400).withName("Версия").withBadge("0.1")
+                SecondaryDrawerItem().withIdentifier(400).withName(R.string.version_icon).withBadge(R.string.app_version)
                     .withIcon(R.drawable.ic_info).withEnabled(false)
             )
             .build()

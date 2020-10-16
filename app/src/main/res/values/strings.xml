@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">eNote</string>
+    <string name="home_icon">Home</string>
+    <string name="trash_icon">Trash</string>
+    <string name="settings_icon">Settings</string>
+    <string name="share_icon">Share</string>
+    <string name="version_icon">Version</string>
+    <string name="app_version" translatable="false">0.1</string>
 </resources>

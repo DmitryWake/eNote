@@ -8,6 +8,7 @@ import com.stgroup.enote.objects.AppDrawer
 import com.stgroup.enote.screens.MainMenuFragment
 import com.stgroup.enote.utilities.APP_ACTIVITY
 import com.stgroup.enote.utilities.replaceFragment
+import com.stgroup.enote.utilities.showToast
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,6 +23,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(mBinding.root)
         initFields()
         initFunc()
+
+        // Метод работает Oh-yeah
+        this.showToast("Заходит как-то Обама в бар")
     }
 
     private fun initFields() {
