@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="normalTextSize">18sp</dimen>
+    <dimen name="app_margin">12dp</dimen>
+    <dimen name="note_margin">48dp</dimen>
+</resources>
