@@ -1,64 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/note_data_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/note_time_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/app_margin"
-        android:text="22 октября 20:46"
-        android:textColor="@color/colorBlack"
-        android:textSize="@dimen/normalTextSize"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/note_edit_text"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/note_data_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="@dimen/note_margin"
-        android:hint="Enter your note here"
-        android:gravity="top"
-        android:textColor="@color/colorBlack"
-        android:inputType="text|textMultiLine|textCapSentences"
-        android:textSize="@dimen/normalTextSize"
-        android:textColorHint="@color/colorGrey"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/note_time_text" />
+        android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/note_button_menu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        <TextView
+            android:id="@+id/note_time_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/app_margin"
+            android:text="22 октября 20:46"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/normalTextSize"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
-            android:id="@+id/add_image_button"
-            android:layout_width="@dimen/button_size_in_panel"
-            android:layout_height="@dimen/button_size_in_panel"
-            android:src="@drawable/ic_base_image" />
+        <EditText
+            android:id="@+id/note_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/note_margin"
+            android:gravity="top"
+            android:hint="Enter your note here"
+            android:inputType="text|textMultiLine|textCapSentences"
+            android:textColor="@color/colorBlack"
+            android:textColorHint="@color/colorGrey"
+            android:textSize="@dimen/normalTextSize"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/note_time_text" />
 
-        <ImageButton
-            android:id="@+id/edit_text_style_button"
-            android:layout_width="@dimen/button_size_in_panel"
-            android:layout_height="@dimen/button_size_in_panel"
-            android:src="@drawable/ic_text_style" />
+        <LinearLayout
+            android:id="@+id/note_button_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
-        <ImageButton
-            android:id="@+id/edit_background_button"
-            android:layout_width="@dimen/button_size_in_panel"
-            android:layout_height="@dimen/button_size_in_panel"
-            android:src="@drawable/ic_style" />
+            <ImageButton
+                android:id="@+id/add_image_button"
+                android:layout_width="@dimen/button_size_in_panel"
+                android:layout_height="@dimen/button_size_in_panel"
+                android:src="@drawable/ic_base_image" />
 
-    </LinearLayout>
+            <ImageButton
+                android:id="@+id/edit_text_style_button"
+                android:layout_width="@dimen/button_size_in_panel"
+                android:layout_height="@dimen/button_size_in_panel"
+                android:src="@drawable/ic_text_style" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <ImageButton
+                android:id="@+id/edit_background_button"
+                android:layout_width="@dimen/button_size_in_panel"
+                android:layout_height="@dimen/button_size_in_panel"
+                android:src="@drawable/ic_style" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <include layout="@layout/action_panel_note_theme" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

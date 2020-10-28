@@ -1,7 +1,3 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="normalTextSize">18sp</dimen>
-    <dimen name="app_margin">12dp</dimen>
-    <dimen name="note_margin">48dp</dimen>
-    <dimen name="button_size_in_panel">60dp</dimen>
 </resources>

@@ -6,12 +6,15 @@ import android.text.SpannableStringBuilder
 import android.text.style.ImageSpan
 import android.view.View
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.stgroup.enote.R
 import com.stgroup.enote.utilities.hideKeyboard
+import kotlinx.android.synthetic.main.action_panel_note_theme.*
 import kotlinx.android.synthetic.main.fragment_note.*
 
 class NoteFragment : Fragment(R.layout.fragment_note) {
@@ -28,6 +31,14 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
     // Панель с кнопками для редактирования заметок
     private lateinit var mButtonMenu: LinearLayout
 
+    // Кнопки на панели кнопок
+    private lateinit var mInsertImageButton: ImageButton
+    private lateinit var mTextStyleButton: ImageButton
+    private lateinit var mBackgroundThemeButton: ImageButton
+
+    // Выдвижные панельки для кнопок
+    private lateinit var mBottomSheetBehaviorTheme: BottomSheetBehavior<*>
+
     override fun onStart() {
         super.onStart()
         initFields()
@@ -41,16 +52,24 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
             hideButtonPanel()
         }
 
+        // Показываем панельку, нажимая на поле для ввода
         mEditText.setOnClickListener {
             showButtonPanel()
         }
 
+        // Показываем выбор тем, при нажатии на кнопку
+        mBackgroundThemeButton.setOnClickListener {
+            mBottomSheetBehaviorTheme.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+
     }
 
+    // Прячем панельку кнопок
     private fun showButtonPanel() {
         mButtonMenu.visibility = View.VISIBLE
     }
 
+    // Показываем панельку кнопок
     private fun hideButtonPanel() {
         mButtonMenu.visibility = View.GONE
     }
@@ -83,6 +102,11 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
 
         mButtonMenu = note_button_menu
         mButtonMenu.visibility = View.GONE
+
+        mBackgroundThemeButton = edit_background_button
+
+        mBottomSheetBehaviorTheme = BottomSheetBehavior.from(bottom_sheet_theme)
+        mBottomSheetBehaviorTheme.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
 }
