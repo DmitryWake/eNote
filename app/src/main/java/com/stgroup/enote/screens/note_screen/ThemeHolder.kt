@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.stgroup.enote.models.ThemeModel
 import kotlinx.android.synthetic.main.theme_item.view.*
 
-class ThemeHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+class ThemeHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     // Вся поверхность айтема
     private val mContainer: ConstraintLayout = view.theme_container
@@ -22,6 +22,9 @@ class ThemeHolder(private val view: View) : RecyclerView.ViewHolder(view) {
     fun draw(theme: ThemeModel) {
         mThemeText.text = theme.mThemeName
         mThemePreview.setImageDrawable(theme.mThemeImage)
+        mContainer.setOnClickListener {
+            NoteFragment.mDataContainer.background = theme.mThemeImage
+        }
     }
 
 }

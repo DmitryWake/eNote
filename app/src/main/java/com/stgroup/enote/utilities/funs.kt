@@ -8,7 +8,7 @@ import com.stgroup.enote.MainActivity
 import com.stgroup.enote.R
 
 fun replaceFragment(fragment: Fragment, addToBackStack: Boolean = true) {
-    //Use addToBackStack true if you want to add fragment to stack
+    // Use addToBackStack true if you want to add fragment to stack
     if (addToBackStack) {
         APP_ACTIVITY.supportFragmentManager.beginTransaction()
             .replace(R.id.data_container, fragment).addToBackStack(null).commit()

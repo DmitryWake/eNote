@@ -12,7 +12,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -27,11 +27,18 @@ import java.io.IOException
 
 class NoteFragment : Fragment(R.layout.fragment_note) {
 
-    // Тег для вывода в консоль информации или ошибок
     companion object {
+        // Тег для вывода в консоль информации или ошибок
         const val TAG = "NoteTag"
 
+        // Список тем
         var mThemeList: MutableList<ThemeModel> = mutableListOf()
+
+        // Чтобы не было повторной загрузки
+        private var isAssetsLoad: Boolean = false
+
+        // Весь экран заметок (временное решение перенести сюда)
+        lateinit var mDataContainer: CoordinatorLayout
     }
 
     // Основное поле ввода текста
@@ -39,9 +46,6 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
 
     // Поле, отвечающие за время изменения заметки
     private lateinit var mDateText: TextView
-
-    // Весь экран заметок
-    private lateinit var mDataContainer: ConstraintLayout
 
     // Панель с кнопками для редактирования заметок
     private lateinit var mButtonMenu: LinearLayout
@@ -54,11 +58,11 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
     // Выдвижные панельки для кнопок
     private lateinit var mBottomSheetBehaviorTheme: BottomSheetBehavior<*>
 
+    // Проверка на инициализацию RecyclerView
+    private var isRecyclerViewConsists: Boolean = false
+
     // Получаем ассеты
     private val mAssets: AssetManager = APP_ACTIVITY.assets
-
-    // Чтобы не было повторной загрузки
-    private var isAssetsLoad: Boolean = false
 
     override fun onStart() {
         super.onStart()
@@ -81,9 +85,11 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
         // Показываем выбор тем, при нажатии на кнопку
         mBackgroundThemeButton.setOnClickListener {
             mBottomSheetBehaviorTheme.state = BottomSheetBehavior.STATE_EXPANDED
+            // Если загружено, то не загружаем
             if (!isAssetsLoad)
                 loadAssets()
-            if (isAssetsLoad)
+            // Если загрузились ассеты, то проводим инициализацию
+            if (isAssetsLoad && !isRecyclerViewConsists)
                 initRecyclerView()
         }
 
@@ -92,12 +98,12 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
     private fun initRecyclerView() {
         val recyclerView = themes_recycler_view
 
-        // Так как мы проверили, выполнилась ли загрузка, то указываем, что mThemeList != null
         val adapter = ThemeChoiceAdapter(mThemeList)
 
         recyclerView.layoutManager =
             LinearLayoutManager(APP_ACTIVITY, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.adapter = adapter
+        isRecyclerViewConsists = true
     }
 
     private fun loadAssets() {
@@ -106,13 +112,18 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
             if (themeNames != null) {
                 Log.i(TAG, "Found ${themeNames.size} themes")
                 for (name in themeNames) {
+                    // Получаем Входящий поток из ассета
                     val inputStream = mAssets.open("$THEMES_FOLDER/$name")
+                    // Преобразуем поток в Drawable
                     val img = Drawable.createFromStream(inputStream, null)
+                    // Обновление листа тем
                     mThemeList.add(ThemeModel(name.substringBefore('.'), img))
                 }
+                // Загрузка удалась
                 isAssetsLoad = true
             }
         } catch (ioe: IOException) {
+            // Загрузка не удалась
             Log.e(TAG, "Could not list assets: ${ioe.message.toString()}")
             return
         }
@@ -161,6 +172,10 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
 
         mBottomSheetBehaviorTheme = BottomSheetBehavior.from(bottom_sheet_theme)
         mBottomSheetBehaviorTheme.state = BottomSheetBehavior.STATE_HIDDEN
+    }
+
+    fun changeBackground(image: Drawable) {
+        mDataContainer.background = image
     }
 
 }
