@@ -19,7 +19,7 @@
     <EditText
         android:id="@+id/note_edit_text"
         android:layout_width="match_parent"
-        android:layout_height="601dp"
+        android:layout_height="match_parent"
         android:layout_margin="@dimen/note_margin"
         android:hint="Enter your note here"
         android:gravity="top"
@@ -29,10 +29,11 @@
         android:textColorHint="@color/colorGrey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/note_time_text" />
 
     <LinearLayout
-        android:id="@+id/action_menu"
+        android:id="@+id/note_button_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -42,20 +43,20 @@
 
         <ImageButton
             android:id="@+id/add_image_button"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="@dimen/button_size_in_panel"
+            android:layout_height="@dimen/button_size_in_panel"
             android:src="@drawable/ic_base_image" />
 
         <ImageButton
             android:id="@+id/edit_text_style_button"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="@dimen/button_size_in_panel"
+            android:layout_height="@dimen/button_size_in_panel"
             android:src="@drawable/ic_text_style" />
 
         <ImageButton
             android:id="@+id/edit_background_button"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="@dimen/button_size_in_panel"
+            android:layout_height="@dimen/button_size_in_panel"
             android:src="@drawable/ic_style" />
 
     </LinearLayout>

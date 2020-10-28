@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ImageSpan
+import android.view.View
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
@@ -22,7 +24,9 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
 
     // Весь экран заметок
     private lateinit var mDataContainer: ConstraintLayout
+
     // Панель с кнопками для редактирования заметок
+    private lateinit var mButtonMenu: LinearLayout
 
     override fun onStart() {
         super.onStart()
@@ -44,11 +48,11 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
     }
 
     private fun showButtonPanel() {
-        TODO("Not yet implemented")
+        mButtonMenu.visibility = View.VISIBLE
     }
 
     private fun hideButtonPanel() {
-        TODO("Not yet implemented")
+        mButtonMenu.visibility = View.GONE
     }
 
 
@@ -72,8 +76,13 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
 
     private fun initFields() {
         mEditText = note_edit_text
+
         mDateText = note_time_text
+
         mDataContainer = note_data_container
+
+        mButtonMenu = note_button_menu
+        mButtonMenu.visibility = View.GONE
     }
 
 }
