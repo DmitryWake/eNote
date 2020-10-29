@@ -1,11 +1,7 @@
 package com.stgroup.enote.screens.note_screen
 
-import android.annotation.SuppressLint
 import android.content.res.AssetManager
 import android.graphics.drawable.Drawable
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.style.ImageSpan
 import android.util.Log
 import android.view.View
 import android.widget.EditText
@@ -15,8 +11,11 @@ import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.gson.Gson
 import com.stgroup.enote.R
+import com.stgroup.enote.models.NoteModel
 import com.stgroup.enote.models.ThemeModel
 import com.stgroup.enote.utilities.APP_ACTIVITY
 import com.stgroup.enote.utilities.THEMES_FOLDER
@@ -25,7 +24,7 @@ import kotlinx.android.synthetic.main.action_panel_note_theme.*
 import kotlinx.android.synthetic.main.fragment_note.*
 import java.io.IOException
 
-class NoteFragment : Fragment(R.layout.fragment_note) {
+class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
 
     companion object {
         // Тег для вывода в консоль информации или ошибок
@@ -42,7 +41,7 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
     }
 
     // Основное поле ввода текста
-    private lateinit var mEditText: EditText
+    private lateinit var mNoteText: EditText
 
     // Поле, отвечающие за время изменения заметки
     private lateinit var mDateText: TextView
@@ -57,6 +56,8 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
 
     // Выдвижные панельки для кнопок
     private lateinit var mBottomSheetBehaviorTheme: BottomSheetBehavior<*>
+    private lateinit var mRecyclerView: RecyclerView
+    private lateinit var mAdapter: ThemeChoiceAdapter
 
     // Проверка на инициализацию RecyclerView
     private var isRecyclerViewConsists: Boolean = false
@@ -68,6 +69,21 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
         super.onStart()
         initFields()
         initFunctions()
+
+        // Если загружено, то не загружаем
+        if (!isAssetsLoad)
+            loadAssets()
+        // Если загрузились ассеты, то проводим инициализацию
+        if (isAssetsLoad && !isRecyclerViewConsists)
+            initRecyclerView()
+
+
+        drawNote()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        saveNote()
     }
 
     private fun initFunctions() {
@@ -78,31 +94,25 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
         }
 
         // Показываем панельку, нажимая на поле для ввода
-        mEditText.setOnClickListener {
+        mNoteText.setOnClickListener {
             showButtonPanel()
         }
 
         // Показываем выбор тем, при нажатии на кнопку
         mBackgroundThemeButton.setOnClickListener {
             mBottomSheetBehaviorTheme.state = BottomSheetBehavior.STATE_EXPANDED
-            // Если загружено, то не загружаем
-            if (!isAssetsLoad)
-                loadAssets()
-            // Если загрузились ассеты, то проводим инициализацию
-            if (isAssetsLoad && !isRecyclerViewConsists)
-                initRecyclerView()
         }
 
     }
 
     private fun initRecyclerView() {
-        val recyclerView = themes_recycler_view
+        mRecyclerView = themes_recycler_view
 
-        val adapter = ThemeChoiceAdapter(mThemeList)
+        mAdapter = ThemeChoiceAdapter(mThemeList)
 
-        recyclerView.layoutManager =
+        mRecyclerView.layoutManager =
             LinearLayoutManager(APP_ACTIVITY, LinearLayoutManager.HORIZONTAL, false)
-        recyclerView.adapter = adapter
+        mRecyclerView.adapter = mAdapter
         isRecyclerViewConsists = true
     }
 
@@ -139,27 +149,8 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
         mButtonMenu.visibility = View.GONE
     }
 
-
-    @SuppressLint("UseCompatLoadingForDrawables")
-    private fun insertImage() {
-        val imageSpan = ImageSpan(resources.getDrawable(R.drawable.ic_home))
-        val builder = SpannableStringBuilder()
-        builder.append(mEditText.text)
-        val imgId = "[img=0]"
-
-        val selStart = mEditText.selectionStart
-        builder.replace(mEditText.selectionStart, mEditText.selectionEnd, imgId)
-        builder.setSpan(
-            imageSpan,
-            selStart,
-            selStart + imgId.length,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        mEditText.text = builder
-    }
-
     private fun initFields() {
-        mEditText = note_edit_text
+        mNoteText = note_edit_text
 
         mDateText = note_time_text
 
@@ -174,8 +165,19 @@ class NoteFragment : Fragment(R.layout.fragment_note) {
         mBottomSheetBehaviorTheme.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
-    fun changeBackground(image: Drawable) {
-        mDataContainer.background = image
+
+    private fun drawNote() {
+        mNoteText.setText(mNote.text, TextView.BufferType.EDITABLE)
+        mThemeList.forEach {
+            if (it.mThemeName == mNote.background)
+                mDataContainer.background = it.mThemeImage
+        }
+        APP_ACTIVITY.title = mNote.name
+    }
+
+    private fun saveNote() {
+        val jsonString = Gson().toJson(mNote)
+        Log.i(TAG, "Saving: $jsonString")
     }
 
 }

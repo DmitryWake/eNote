@@ -39,4 +39,7 @@ dependencies {
     //Material Drawer
     implementation "com.mikepenz:materialdrawer:7.0.0"
 
+    // Convert to JSON
+    implementation 'com.google.code.gson:gson:2.8.6'
+
 }
