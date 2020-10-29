@@ -1,13 +1,14 @@
 package com.stgroup.enote.utilities
 import android.content.Context
 import android.content.Intent
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.stgroup.enote.MainActivity
 import com.stgroup.enote.R
 
 fun replaceFragment(fragment: Fragment, addToBackStack: Boolean = true) {
-    //Use addToBackStack true if you want to add fragment to stack
+    // Use addToBackStack true if you want to add fragment to stack
     if (addToBackStack) {
         APP_ACTIVITY.supportFragmentManager.beginTransaction()
             .replace(R.id.data_container, fragment).addToBackStack(null).commit()
@@ -24,9 +25,15 @@ fun Context.showToast(message: CharSequence) =
 
 
 // Restart activity function
-fun restartActivity(){
+fun restartActivity() {
     val intent = Intent(APP_ACTIVITY, MainActivity::class.java)
     APP_ACTIVITY.startActivity(intent)
 
     APP_ACTIVITY.finish()
+}
+
+fun hideKeyboard() {
+    val imm: InputMethodManager =
+        APP_ACTIVITY.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(APP_ACTIVITY.window.decorView.windowToken, 0)
 }
