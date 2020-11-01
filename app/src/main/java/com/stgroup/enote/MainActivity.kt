@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.stgroup.enote.databinding.ActivityMainBinding
 import com.stgroup.enote.objects.AppDrawer
-import com.stgroup.enote.screens.MainMenuFragment
+import com.stgroup.enote.screens.main_menu_screen.MainMenuFragment
 import com.stgroup.enote.utilities.APP_ACTIVITY
 import com.stgroup.enote.utilities.replaceFragment
 import com.stgroup.enote.utilities.showToast
