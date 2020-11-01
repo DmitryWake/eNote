@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/notes_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".screens.main_menu_screen.MainMenuFragment">
@@ -9,6 +11,9 @@
         android:id="@+id/main_menu_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/category_item" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
