@@ -19,7 +19,8 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
 
     override fun onStart() {
         super.onStart()
-        initCategories()
+        if (categoryList.isEmpty())
+            initCategories()
         initRecyclerView()
     }
 
@@ -38,17 +39,7 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
 
     override fun onResume() {
         super.onResume()
+        APP_ACTIVITY.title = "eNote"
         APP_ACTIVITY.mDrawer.enableDrawer()
-        // Временно для открытия заметки
-        /*val note = NoteModel(
-            "New note",
-            "null",
-            "Test",
-            "null",
-            "null",
-            "null",
-            "NightSky"
-        )
-        replaceFragment(NoteFragment(note))*/
     }
 }
