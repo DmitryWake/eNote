@@ -24,6 +24,7 @@ class ThemeHolder(view: View) : RecyclerView.ViewHolder(view) {
         mThemePreview.setImageDrawable(theme.mThemeImage)
         mContainer.setOnClickListener {
             NoteFragment.mDataContainer.background = theme.mThemeImage
+            NoteFragment.mCurrentThemeName = theme.mThemeName
         }
     }
 
