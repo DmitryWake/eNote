@@ -29,6 +29,9 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
         mRecyclerView.layoutManager = LinearLayoutManager(APP_ACTIVITY)
     }
 
+
+    // Как вариант загрузить все заметки сразу при запуске приложения, а потом уже отбирать.
+    // Нужно подумать над этим вариантом
     private fun initNoteList() {
         mNoteList = mutableListOf()
         mNoteList.add(

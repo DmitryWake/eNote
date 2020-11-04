@@ -32,6 +32,7 @@ fun restartActivity() {
     APP_ACTIVITY.finish()
 }
 
+// Прячем клавиатуру :)
 fun hideKeyboard() {
     val imm: InputMethodManager =
         APP_ACTIVITY.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

@@ -1,6 +1,7 @@
 package com.stgroup.enote.models
 
 data class NoteModel(
+    var id: Int,
     var name: String = "",
     var category: String = "",
     var text: String = "",

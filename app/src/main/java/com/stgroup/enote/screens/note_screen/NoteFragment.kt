@@ -17,9 +17,7 @@ import com.google.gson.Gson
 import com.stgroup.enote.R
 import com.stgroup.enote.models.NoteModel
 import com.stgroup.enote.models.ThemeModel
-import com.stgroup.enote.utilities.APP_ACTIVITY
-import com.stgroup.enote.utilities.THEMES_FOLDER
-import com.stgroup.enote.utilities.hideKeyboard
+import com.stgroup.enote.utilities.*
 import kotlinx.android.synthetic.main.action_panel_note_theme.*
 import kotlinx.android.synthetic.main.fragment_note.*
 import java.io.IOException
@@ -38,6 +36,9 @@ class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
 
         // Весь экран заметок (временное решение перенести сюда)
         lateinit var mDataContainer: CoordinatorLayout
+
+        // Переменная хранит имя текущей темы, чтоб в случае изменения её пользователем запомнить и сохранить
+        lateinit var mCurrentThemeName: String
     }
 
     // Основное поле ввода текста
@@ -77,12 +78,11 @@ class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
         if (isAssetsLoad && !isRecyclerViewConsists)
             initRecyclerView()
 
-
-        drawNote()
+        loadNote()
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onPause() {
+        super.onPause()
         saveNote()
     }
 
@@ -163,21 +163,36 @@ class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
 
         mBottomSheetBehaviorTheme = BottomSheetBehavior.from(bottom_sheet_theme)
         mBottomSheetBehaviorTheme.state = BottomSheetBehavior.STATE_HIDDEN
+
+        // Обьяляем тему пустой. Потом при загрузке замеки делаем проверку
+        mCurrentThemeName = ""
     }
 
 
-    private fun drawNote() {
+    private fun loadNote() {
+        // Устанавливаем текст в поле для ввода
         mNoteText.setText(mNote.text, TextView.BufferType.EDITABLE)
+        // Проверяем на наличие корректной темы (бежим по списку тем и ищем совпадение в названии)
+
         mThemeList.forEach {
-            if (it.mThemeName == mNote.background)
+            if (it.mThemeName == mNote.background) {
                 mDataContainer.background = it.mThemeImage
+                mCurrentThemeName = mNote.background
+            }
         }
+        // Заголовок на тулбаре
         APP_ACTIVITY.title = mNote.name
     }
 
     private fun saveNote() {
+        mNote.text = mNoteText.text.toString()
+        if (mCurrentThemeName.isNotEmpty())
+            mNote.background = mCurrentThemeName
+
+        // Сохраняем NoteModel в строку джсон
         val jsonString = Gson().toJson(mNote)
-        Log.i(TAG, "Saving: $jsonString")
+        // Сохраняем json в хранилище заметок
+        NOTES_STORAGE.edit().putString("$STORAGE_NOTES_ID:${mNote.id}", jsonString).apply()
     }
 
 }

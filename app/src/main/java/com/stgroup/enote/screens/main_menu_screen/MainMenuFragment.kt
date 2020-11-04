@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.stgroup.enote.R
 import com.stgroup.enote.models.CategoryModel
 import com.stgroup.enote.utilities.APP_ACTIVITY
+import com.stgroup.enote.utilities.CATEGORIES_STORAGE
+import com.stgroup.enote.utilities.STORAGE_CATEGORIES_ID
 import kotlinx.android.synthetic.main.fragment_main_menu.*
 
 class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
