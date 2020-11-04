@@ -69,5 +69,6 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include layout="@layout/action_panel_note_theme" />
+    <include layout="@layout/action_panel_note_rich_text" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

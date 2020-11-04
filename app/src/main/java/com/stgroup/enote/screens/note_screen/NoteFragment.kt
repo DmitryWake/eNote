@@ -18,6 +18,7 @@ import com.stgroup.enote.R
 import com.stgroup.enote.models.NoteModel
 import com.stgroup.enote.models.ThemeModel
 import com.stgroup.enote.utilities.*
+import kotlinx.android.synthetic.main.action_panel_note_rich_text.*
 import kotlinx.android.synthetic.main.action_panel_note_theme.*
 import kotlinx.android.synthetic.main.fragment_note.*
 import java.io.IOException
@@ -57,6 +58,8 @@ class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
 
     // Выдвижные панельки для кнопок
     private lateinit var mBottomSheetBehaviorTheme: BottomSheetBehavior<*>
+    private lateinit var mBottomSheetBehaviorRichText: BottomSheetBehavior<*>
+
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mAdapter: ThemeChoiceAdapter
 
@@ -101,6 +104,11 @@ class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
         // Показываем выбор тем, при нажатии на кнопку
         mBackgroundThemeButton.setOnClickListener {
             mBottomSheetBehaviorTheme.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+
+        // Показываем возможность редактирования текста
+        mTextStyleButton.setOnClickListener {
+            mBottomSheetBehaviorRichText.state = BottomSheetBehavior.STATE_EXPANDED
         }
 
     }
@@ -160,9 +168,13 @@ class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
         mButtonMenu.visibility = View.GONE
 
         mBackgroundThemeButton = edit_background_button
+        mTextStyleButton = edit_text_style_button
 
         mBottomSheetBehaviorTheme = BottomSheetBehavior.from(bottom_sheet_theme)
         mBottomSheetBehaviorTheme.state = BottomSheetBehavior.STATE_HIDDEN
+
+        mBottomSheetBehaviorRichText = BottomSheetBehavior.from(bottom_sheet_rich_text)
+        mBottomSheetBehaviorRichText.state = BottomSheetBehavior.STATE_HIDDEN
 
         // Обьяляем тему пустой. Потом при загрузке замеки делаем проверку
         mCurrentThemeName = ""
