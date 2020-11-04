@@ -10,6 +10,7 @@ import com.stgroup.enote.models.NoteModel
 import com.stgroup.enote.utilities.APP_ACTIVITY
 import com.stgroup.enote.utilities.NOTES_STORAGE
 import com.stgroup.enote.utilities.STORAGE_NOTES_ID
+import com.stgroup.enote.utilities.hideKeyboard
 import kotlinx.android.synthetic.main.fragment_category.*
 
 class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.fragment_category) {
@@ -66,5 +67,6 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
     override fun onResume() {
         super.onResume()
         APP_ACTIVITY.title = category.name
+        hideKeyboard()
     }
 }

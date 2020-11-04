@@ -1,7 +1,13 @@
 package com.stgroup.enote.screens.note_screen
 
 import android.content.res.AssetManager
+import android.graphics.Typeface
 import android.graphics.drawable.Drawable
+import android.text.Html
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.StyleSpan
+import android.text.style.UnderlineSpan
 import android.util.Log
 import android.view.View
 import android.widget.EditText
@@ -109,9 +115,60 @@ class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
         // Показываем возможность редактирования текста
         mTextStyleButton.setOnClickListener {
             mBottomSheetBehaviorRichText.state = BottomSheetBehavior.STATE_EXPANDED
+            // Изменение текста на жирный
+            button_text_bold.setOnClickListener {
+                changeTextStyle(StyleSpan(Typeface.BOLD))
+            }
+            // Изменение текста на курсив
+            button_text_italic.setOnClickListener {
+                changeTextStyle(StyleSpan(Typeface.ITALIC))
+            }
+            // Изменене текста на подчеркнутый
+            button_text_underlined.setOnClickListener {
+                toUnderlineText()
+            }
         }
 
     }
+
+    // Для подчеркнутого текста отдельный метод, так как не получается обобщить с другими
+    private fun toUnderlineText() {
+        val startSelection = mNoteText.selectionStart
+        val endSelection = mNoteText.selectionEnd
+        if (startSelection < endSelection) {
+            val spanString = SpannableString(mNoteText.text)
+            spanString.setSpan(
+                UnderlineSpan(),
+                startSelection,
+                endSelection,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            mNoteText.setText(spanString, TextView.BufferType.SPANNABLE)
+            mNoteText.setSelection(endSelection)
+        }
+    }
+
+    // Изменяем стиль текста
+    private fun changeTextStyle(style: StyleSpan) {
+        val startSelection = mNoteText.selectionStart
+        val endSelection = mNoteText.selectionEnd
+        // Значит текст выделен
+        if (startSelection < endSelection) {
+            // Получаем стилизованную строку
+            val spanString = SpannableString(mNoteText.text)
+            spanString.setSpan(
+                style,
+                startSelection,
+                endSelection,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            // Заменяем наш текст на текст со стилем
+            mNoteText.setText(spanString, TextView.BufferType.SPANNABLE)
+            // Перемещаем курсор в конец выделения
+            mNoteText.setSelection(endSelection)
+        }
+    }
+
 
     private fun initRecyclerView() {
         mRecyclerView = themes_recycler_view
@@ -183,7 +240,7 @@ class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
 
     private fun loadNote() {
         // Устанавливаем текст в поле для ввода
-        mNoteText.setText(mNote.text, TextView.BufferType.EDITABLE)
+        mNoteText.setText(Html.fromHtml(mNote.text), TextView.BufferType.EDITABLE)
         // Проверяем на наличие корректной темы (бежим по списку тем и ищем совпадение в названии)
 
         mThemeList.forEach {
@@ -197,7 +254,7 @@ class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
     }
 
     private fun saveNote() {
-        mNote.text = mNoteText.text.toString()
+        mNote.text = Html.toHtml(mNoteText.text)
         if (mCurrentThemeName.isNotEmpty())
             mNote.background = mCurrentThemeName
 
