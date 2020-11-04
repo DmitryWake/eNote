@@ -46,10 +46,10 @@ class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
 
         // Переменная хранит имя текущей темы, чтоб в случае изменения её пользователем запомнить и сохранить
         lateinit var mCurrentThemeName: String
-    }
 
-    // Основное поле ввода текста
-    private lateinit var mNoteText: EditText
+        // Основное поле ввода текста
+        lateinit var mNoteText: EditText
+    }
 
     // Поле, отвечающие за время изменения заметки
     private lateinit var mDateText: TextView
@@ -240,6 +240,7 @@ class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
 
     private fun loadNote() {
         // Устанавливаем текст в поле для ввода
+        // Загружаем из Html, потому что сохраняли в этом формате
         mNoteText.setText(Html.fromHtml(mNote.text), TextView.BufferType.EDITABLE)
         // Проверяем на наличие корректной темы (бежим по списку тем и ищем совпадение в названии)
 
@@ -247,6 +248,7 @@ class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
             if (it.mThemeName == mNote.background) {
                 mDataContainer.background = it.mThemeImage
                 mCurrentThemeName = mNote.background
+                mNoteText.setTextColor(getThemeTextColour(mCurrentThemeName))
             }
         }
         // Заголовок на тулбаре
@@ -254,7 +256,9 @@ class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
     }
 
     private fun saveNote() {
+        // Сохраняем текст в Html чтобы сохранить стилизацию
         mNote.text = Html.toHtml(mNoteText.text)
+
         if (mCurrentThemeName.isNotEmpty())
             mNote.background = mCurrentThemeName
 

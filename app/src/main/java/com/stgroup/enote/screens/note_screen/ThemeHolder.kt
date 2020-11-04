@@ -6,6 +6,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.stgroup.enote.models.ThemeModel
+import com.stgroup.enote.utilities.getThemeTextColour
 import kotlinx.android.synthetic.main.theme_item.view.*
 
 class ThemeHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -25,6 +26,7 @@ class ThemeHolder(view: View) : RecyclerView.ViewHolder(view) {
         mContainer.setOnClickListener {
             NoteFragment.mDataContainer.background = theme.mThemeImage
             NoteFragment.mCurrentThemeName = theme.mThemeName
+            NoteFragment.mNoteText.setTextColor(getThemeTextColour(theme.mThemeName))
         }
     }
 
