@@ -7,8 +7,8 @@ import com.stgroup.enote.databinding.ActivityMainBinding
 import com.stgroup.enote.objects.AppDrawer
 import com.stgroup.enote.screens.main_menu_screen.MainMenuFragment
 import com.stgroup.enote.utilities.APP_ACTIVITY
+import com.stgroup.enote.utilities.initLocalBase
 import com.stgroup.enote.utilities.replaceFragment
-import com.stgroup.enote.utilities.showToast
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,10 +22,8 @@ class MainActivity : AppCompatActivity() {
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
         initFields()
+        initLocalBase()
         initFunc()
-
-        // Метод работает Oh-yeah
-        this.showToast("Заходит как-то Обама в бар")
     }
 
     private fun initFields() {
@@ -40,5 +38,3 @@ class MainActivity : AppCompatActivity() {
         replaceFragment(MainMenuFragment(), false)
     }
 }
-
-// Мама, я в телевизоре (с) Артур

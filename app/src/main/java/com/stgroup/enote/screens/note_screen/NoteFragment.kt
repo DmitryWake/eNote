@@ -1,7 +1,13 @@
 package com.stgroup.enote.screens.note_screen
 
 import android.content.res.AssetManager
+import android.graphics.Typeface
 import android.graphics.drawable.Drawable
+import android.text.Html
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.StyleSpan
+import android.text.style.UnderlineSpan
 import android.util.Log
 import android.view.View
 import android.widget.EditText
@@ -17,9 +23,8 @@ import com.google.gson.Gson
 import com.stgroup.enote.R
 import com.stgroup.enote.models.NoteModel
 import com.stgroup.enote.models.ThemeModel
-import com.stgroup.enote.utilities.APP_ACTIVITY
-import com.stgroup.enote.utilities.THEMES_FOLDER
-import com.stgroup.enote.utilities.hideKeyboard
+import com.stgroup.enote.utilities.*
+import kotlinx.android.synthetic.main.action_panel_note_rich_text.*
 import kotlinx.android.synthetic.main.action_panel_note_theme.*
 import kotlinx.android.synthetic.main.fragment_note.*
 import java.io.IOException
@@ -38,10 +43,13 @@ class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
 
         // Весь экран заметок (временное решение перенести сюда)
         lateinit var mDataContainer: CoordinatorLayout
-    }
 
-    // Основное поле ввода текста
-    private lateinit var mNoteText: EditText
+        // Переменная хранит имя текущей темы, чтоб в случае изменения её пользователем запомнить и сохранить
+        lateinit var mCurrentThemeName: String
+
+        // Основное поле ввода текста
+        lateinit var mNoteText: EditText
+    }
 
     // Поле, отвечающие за время изменения заметки
     private lateinit var mDateText: TextView
@@ -56,6 +64,8 @@ class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
 
     // Выдвижные панельки для кнопок
     private lateinit var mBottomSheetBehaviorTheme: BottomSheetBehavior<*>
+    private lateinit var mBottomSheetBehaviorRichText: BottomSheetBehavior<*>
+
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mAdapter: ThemeChoiceAdapter
 
@@ -77,12 +87,11 @@ class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
         if (isAssetsLoad && !isRecyclerViewConsists)
             initRecyclerView()
 
-
-        drawNote()
+        loadNote()
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onPause() {
+        super.onPause()
         saveNote()
     }
 
@@ -103,7 +112,63 @@ class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
             mBottomSheetBehaviorTheme.state = BottomSheetBehavior.STATE_EXPANDED
         }
 
+        // Показываем возможность редактирования текста
+        mTextStyleButton.setOnClickListener {
+            mBottomSheetBehaviorRichText.state = BottomSheetBehavior.STATE_EXPANDED
+            // Изменение текста на жирный
+            button_text_bold.setOnClickListener {
+                changeTextStyle(StyleSpan(Typeface.BOLD))
+            }
+            // Изменение текста на курсив
+            button_text_italic.setOnClickListener {
+                changeTextStyle(StyleSpan(Typeface.ITALIC))
+            }
+            // Изменене текста на подчеркнутый
+            button_text_underlined.setOnClickListener {
+                toUnderlineText()
+            }
+        }
+
     }
+
+    // Для подчеркнутого текста отдельный метод, так как не получается обобщить с другими
+    private fun toUnderlineText() {
+        val startSelection = mNoteText.selectionStart
+        val endSelection = mNoteText.selectionEnd
+        if (startSelection < endSelection) {
+            val spanString = SpannableString(mNoteText.text)
+            spanString.setSpan(
+                UnderlineSpan(),
+                startSelection,
+                endSelection,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            mNoteText.setText(spanString, TextView.BufferType.SPANNABLE)
+            mNoteText.setSelection(endSelection)
+        }
+    }
+
+    // Изменяем стиль текста
+    private fun changeTextStyle(style: StyleSpan) {
+        val startSelection = mNoteText.selectionStart
+        val endSelection = mNoteText.selectionEnd
+        // Значит текст выделен
+        if (startSelection < endSelection) {
+            // Получаем стилизованную строку
+            val spanString = SpannableString(mNoteText.text)
+            spanString.setSpan(
+                style,
+                startSelection,
+                endSelection,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            // Заменяем наш текст на текст со стилем
+            mNoteText.setText(spanString, TextView.BufferType.SPANNABLE)
+            // Перемещаем курсор в конец выделения
+            mNoteText.setSelection(endSelection)
+        }
+    }
+
 
     private fun initRecyclerView() {
         mRecyclerView = themes_recycler_view
@@ -160,24 +225,47 @@ class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
         mButtonMenu.visibility = View.GONE
 
         mBackgroundThemeButton = edit_background_button
+        mTextStyleButton = edit_text_style_button
 
         mBottomSheetBehaviorTheme = BottomSheetBehavior.from(bottom_sheet_theme)
         mBottomSheetBehaviorTheme.state = BottomSheetBehavior.STATE_HIDDEN
+
+        mBottomSheetBehaviorRichText = BottomSheetBehavior.from(bottom_sheet_rich_text)
+        mBottomSheetBehaviorRichText.state = BottomSheetBehavior.STATE_HIDDEN
+
+        // Обьяляем тему пустой. Потом при загрузке замеки делаем проверку
+        mCurrentThemeName = ""
     }
 
 
-    private fun drawNote() {
-        mNoteText.setText(mNote.text, TextView.BufferType.EDITABLE)
+    private fun loadNote() {
+        // Устанавливаем текст в поле для ввода
+        // Загружаем из Html, потому что сохраняли в этом формате
+        mNoteText.setText(Html.fromHtml(mNote.text), TextView.BufferType.EDITABLE)
+        // Проверяем на наличие корректной темы (бежим по списку тем и ищем совпадение в названии)
+
         mThemeList.forEach {
-            if (it.mThemeName == mNote.background)
+            if (it.mThemeName == mNote.background) {
                 mDataContainer.background = it.mThemeImage
+                mCurrentThemeName = mNote.background
+                mNoteText.setTextColor(getThemeTextColour(mCurrentThemeName))
+            }
         }
+        // Заголовок на тулбаре
         APP_ACTIVITY.title = mNote.name
     }
 
     private fun saveNote() {
+        // Сохраняем текст в Html чтобы сохранить стилизацию
+        mNote.text = Html.toHtml(mNoteText.text)
+
+        if (mCurrentThemeName.isNotEmpty())
+            mNote.background = mCurrentThemeName
+
+        // Сохраняем NoteModel в строку джсон
         val jsonString = Gson().toJson(mNote)
-        Log.i(TAG, "Saving: $jsonString")
+        // Сохраняем json в хранилище заметок
+        NOTES_STORAGE.edit().putString("$STORAGE_NOTES_ID:${mNote.id}", jsonString).apply()
     }
 
 }

@@ -3,6 +3,7 @@ import android.content.Context
 import android.content.Intent
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.stgroup.enote.MainActivity
 import com.stgroup.enote.R
@@ -32,8 +33,26 @@ fun restartActivity() {
     APP_ACTIVITY.finish()
 }
 
+// Прячем клавиатуру :)
 fun hideKeyboard() {
     val imm: InputMethodManager =
         APP_ACTIVITY.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.hideSoftInputFromWindow(APP_ACTIVITY.window.decorView.windowToken, 0)
 }
+
+// Инициализация локальных хранилищ
+fun initLocalBase() {
+    CATEGORIES_STORAGE = APP_ACTIVITY.getSharedPreferences(
+        STORAGE_CATEGORIES_NAME, Context.MODE_PRIVATE
+    )
+    NOTES_STORAGE = APP_ACTIVITY.getSharedPreferences(
+        STORAGE_NOTES_NAME, Context.MODE_PRIVATE
+    )
+}
+
+// Потом автоматизировать
+fun getThemeTextColour(themeName: String): Int =
+    when (themeName) {
+        "NightSky" -> ContextCompat.getColor(APP_ACTIVITY, R.color.colorAccent)
+        else -> ContextCompat.getColor(APP_ACTIVITY, R.color.colorBlack)
+    }
