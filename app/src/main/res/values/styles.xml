@@ -8,4 +8,13 @@
         <item name="android:colorBackground">@color/colorAccent</item>
     </style>
 
+    <style name="largeTextStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/app_margin</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:textSize">@dimen/largeTextSize</item>
+    </style>
+
 </resources>

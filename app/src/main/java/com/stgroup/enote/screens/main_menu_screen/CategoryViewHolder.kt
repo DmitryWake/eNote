@@ -5,8 +5,8 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.stgroup.enote.models.CategoryModel
-import com.stgroup.enote.utilities.APP_ACTIVITY
-import com.stgroup.enote.utilities.showToast
+import com.stgroup.enote.screens.category_fragment.CategoryFragment
+import com.stgroup.enote.utilities.replaceFragment
 import kotlinx.android.synthetic.main.category_item.view.*
 
 class CategoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -17,7 +17,7 @@ class CategoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     fun draw(category: CategoryModel) {
         mCategoryNameText.text = category.name
         mDataContainer.setOnClickListener {
-            APP_ACTIVITY.showToast("Success!")
+            replaceFragment(CategoryFragment(category), true)
         }
     }
 
