@@ -21,12 +21,12 @@ class ThemeHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val mThemeText: TextView = view.theme_text
 
     fun draw(theme: ThemeModel) {
-        mThemeText.text = theme.mThemeName
-        mThemePreview.setImageDrawable(theme.mThemeImage)
+        mThemeText.text = theme.themeName
+        mThemePreview.setImageDrawable(theme.themeImage)
         mContainer.setOnClickListener {
-            NoteFragment.mDataContainer.background = theme.mThemeImage
-            NoteFragment.mCurrentThemeName = theme.mThemeName
-            NoteFragment.mNoteText.setTextColor(getThemeTextColour(theme.mThemeName))
+            NoteFragment.mDataContainer.background = theme.themeImage
+            NoteFragment.mCurrentThemeName = theme.themeName
+            NoteFragment.mNoteText.setTextColor(getThemeTextColour(theme.themeName))
         }
     }
 

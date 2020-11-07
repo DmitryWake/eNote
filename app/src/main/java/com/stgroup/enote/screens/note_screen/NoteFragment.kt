@@ -1,11 +1,15 @@
 package com.stgroup.enote.screens.note_screen
 
+import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.res.AssetManager
 import android.graphics.Typeface
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.text.Html
 import android.text.SpannableString
 import android.text.Spanned
+import android.text.style.ImageSpan
 import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
 import android.util.Log
@@ -15,6 +19,7 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,12 +29,15 @@ import com.stgroup.enote.R
 import com.stgroup.enote.models.NoteModel
 import com.stgroup.enote.models.ThemeModel
 import com.stgroup.enote.utilities.*
+import com.theartofdev.edmodo.cropper.CropImage
 import kotlinx.android.synthetic.main.action_panel_note_rich_text.*
 import kotlinx.android.synthetic.main.action_panel_note_theme.*
 import kotlinx.android.synthetic.main.fragment_note.*
+import java.io.File
 import java.io.IOException
+import java.util.*
 
-class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
+class NoteFragment(private var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
 
     companion object {
         // Тег для вывода в консоль информации или ошибок
@@ -50,6 +58,9 @@ class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
         // Основное поле ввода текста
         lateinit var mNoteText: EditText
     }
+
+    // Мэп картинок <lastIndex, ImageSpan>
+    private lateinit var mSpans: MutableMap<Int, ImageSpan>
 
     // Поле, отвечающие за время изменения заметки
     private lateinit var mDateText: TextView
@@ -129,6 +140,35 @@ class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
             }
         }
 
+        mInsertImageButton.setOnClickListener {
+            getImage()
+        }
+
+    }
+
+    @SuppressLint("SdCardPath")
+    private fun getImage() {
+        val imageID = UUID.randomUUID().toString()
+
+        val filesDir = APP_ACTIVITY.filesDir
+        val photoFile = File(filesDir, "IMG_$imageID.jpg")
+
+        val selStart = mNoteText.selectionStart
+        val selEnd = mNoteText.selectionEnd
+
+        val htmlImage = "<img src=\"$imageID\"/>"
+
+        val text = mNoteText.text.replace(selStart, selEnd, htmlImage)
+
+        mNoteText.text = text
+
+        val uri = FileProvider.getUriForFile(
+            APP_ACTIVITY,
+            "com.stgroup.android.enote.fileprovider",
+            photoFile
+        )
+
+        CropImage.activity().setOutputUri(uri).start(APP_ACTIVITY, this)
     }
 
     // Для подчеркнутого текста отдельный метод, так как не получается обобщить с другими
@@ -226,6 +266,7 @@ class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
 
         mBackgroundThemeButton = edit_background_button
         mTextStyleButton = edit_text_style_button
+        mInsertImageButton = add_image_button
 
         mBottomSheetBehaviorTheme = BottomSheetBehavior.from(bottom_sheet_theme)
         mBottomSheetBehaviorTheme.state = BottomSheetBehavior.STATE_HIDDEN
@@ -238,15 +279,50 @@ class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
     }
 
 
+    @SuppressLint("SdCardPath")
     private fun loadNote() {
         // Устанавливаем текст в поле для ввода
         // Загружаем из Html, потому что сохраняли в этом формате
-        mNoteText.setText(Html.fromHtml(mNote.text), TextView.BufferType.EDITABLE)
-        // Проверяем на наличие корректной темы (бежим по списку тем и ищем совпадение в названии)
 
+        // Если версия андроид больше или равна 24, то разрешаем отображение картинок
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            // Получаем сохраненный текст
+            val text = Html.fromHtml(mNote.text, Html.FROM_HTML_MODE_COMPACT)
+            // Преобразоываем HTML
+            mNoteText.setText(
+                Html.fromHtml(
+                    text.toString(),
+                    Html.FROM_HTML_MODE_COMPACT,
+                    { source ->
+                        val path = "/data/data/com.stgroup.enote/files/IMG_$source.jpg"
+                        // Получаем изображение из пути
+                        val drawable = BitmapDrawable.createFromPath(path)
+                        drawable?.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+                        drawable
+                    },
+                    null
+                )
+            )
+        } else {
+            // Если версия андроид меньше, изобрвжения не подгружаем
+            val text = Html.fromHtml(mNote.text)
+            mNoteText.setText(Html.fromHtml(text.toString()))
+            // Блокируем кнопку
+            mInsertImageButton.isClickable = false
+        }
+
+        // Добавляем картинки в мэп
+        mSpans = mutableMapOf()
+        val spans = mNoteText.text.getSpans(0, mNoteText.length(), ImageSpan::class.java)
+        spans.forEach { span ->
+            val index = mNoteText.text.getSpanEnd(span)
+            mSpans[index] = span
+        }
+
+        // Проверяем на наличие корректной темы (бежим по списку тем и ищем совпадение в названии)
         mThemeList.forEach {
-            if (it.mThemeName == mNote.background) {
-                mDataContainer.background = it.mThemeImage
+            if (it.themeName == mNote.background) {
+                mDataContainer.background = it.themeImage
                 mCurrentThemeName = mNote.background
                 mNoteText.setTextColor(getThemeTextColour(mCurrentThemeName))
             }
@@ -255,9 +331,38 @@ class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
         APP_ACTIVITY.title = mNote.name
     }
 
+    @SuppressLint("SdCardPath")
     private fun saveNote() {
         // Сохраняем текст в Html чтобы сохранить стилизацию
-        mNote.text = Html.toHtml(mNoteText.text)
+        var text = mNoteText.text
+
+        // Получаем список изображений
+        val spans = text.getSpans(0, text.length, ImageSpan::class.java)
+
+        // Удаляем файлы фотографий, которые не используются
+        mSpans.forEach {
+            if (text.getSpanEnd(it.value) == -1) {
+                val source = it.value.source
+                val path = "/data/data/com.stgroup.enote/files/IMG_$source.jpg"
+                val photoFile = File(path)
+                photoFile.delete()
+            }
+        }
+
+        // Преобразовываем их в html формат для сохранения
+        spans.forEach { span ->
+            val indexStart = text.getSpanStart(span)
+
+            val source = span.source
+            text.removeSpan(span)
+            text = text.replace(indexStart, indexStart + 1, "<img src=\"$source\"/>")
+        }
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            mNote.text = Html.toHtml(text, Html.TO_HTML_PARAGRAPH_LINES_CONSECUTIVE)
+        } else {
+            mNote.text = Html.toHtml(text)
+        }
 
         if (mCurrentThemeName.isNotEmpty())
             mNote.background = mCurrentThemeName
@@ -266,6 +371,18 @@ class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
         val jsonString = Gson().toJson(mNote)
         // Сохраняем json в хранилище заметок
         NOTES_STORAGE.edit().putString("$STORAGE_NOTES_ID:${mNote.id}", jsonString).apply()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (data != null) {
+            when (requestCode) {
+                CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE -> {
+                    val uri = CropImage.getActivityResult(data).uri
+                    APP_ACTIVITY.revokeUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                }
+            }
+        }
     }
 
 }
