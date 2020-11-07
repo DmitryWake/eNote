@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable
 import android.text.Html
 import android.text.SpannableString
 import android.text.Spanned
+import android.text.style.ImageSpan
 import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
 import android.util.Log
@@ -41,8 +42,6 @@ class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
     companion object {
         // Тег для вывода в консоль информации или ошибок
         const val TAG = "NoteTag"
-
-        var isNoteLoad = false
 
         // Список тем
         var mThemeList: MutableList<ThemeModel> = mutableListOf()
@@ -96,8 +95,7 @@ class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
         if (isAssetsLoad && !isRecyclerViewConsists)
             initRecyclerView()
 
-        if (!isNoteLoad)
-            loadNote()
+        loadNote()
     }
 
     override fun onPause() {
@@ -295,13 +293,14 @@ class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
                     { source ->
                         val path = "/data/data/com.stgroup.enote/files/IMG_$source.jpg"
                         // Получаем изображение из пути
-                        val drawable = BitmapDrawable.createFromPath(path) as Drawable
-                        drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+                        val drawable = BitmapDrawable.createFromPath(path)
+                        drawable?.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
                         drawable
                     },
                     null
                 )
             )
+            println()
         } else {
             // Если версия андроид меньше, изобрвжения не подгружаем
             val text = Html.fromHtml(mNote.text)
@@ -320,12 +319,22 @@ class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
         }
         // Заголовок на тулбаре
         APP_ACTIVITY.title = mNote.name
-        isNoteLoad = true
     }
 
     private fun saveNote() {
         // Сохраняем текст в Html чтобы сохранить стилизацию
-        val text = mNoteText.text
+        var text = mNoteText.text
+
+        // Получаем список изображений
+        val spans = text.getSpans(0, text.length, ImageSpan::class.java)
+
+        // Преобразовываем их в html формат для сохранения
+        spans.forEach { span ->
+            val index = text.getSpanStart(span)
+            val source = span.source
+            text.removeSpan(span)
+            text = text.replace(index, index + 1, "<img src=\"$source\"/>")
+        }
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
             mNote.text = Html.toHtml(text, Html.TO_HTML_PARAGRAPH_LINES_CONSECUTIVE)
@@ -340,7 +349,6 @@ class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
         val jsonString = Gson().toJson(mNote)
         // Сохраняем json в хранилище заметок
         NOTES_STORAGE.edit().putString("$STORAGE_NOTES_ID:${mNote.id}", jsonString).apply()
-        isNoteLoad = false
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
