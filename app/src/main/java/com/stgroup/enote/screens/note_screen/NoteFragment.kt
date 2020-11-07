@@ -37,7 +37,7 @@ import java.io.File
 import java.io.IOException
 import java.util.*
 
-class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
+class NoteFragment(private var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
 
     companion object {
         // Тег для вывода в консоль информации или ошибок
@@ -58,6 +58,9 @@ class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
         // Основное поле ввода текста
         lateinit var mNoteText: EditText
     }
+
+    // Мэп картинок <lastIndex, ImageSpan>
+    private lateinit var mSpans: MutableMap<Int, ImageSpan>
 
     // Поле, отвечающие за время изменения заметки
     private lateinit var mDateText: TextView
@@ -300,13 +303,20 @@ class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
                     null
                 )
             )
-            println()
         } else {
             // Если версия андроид меньше, изобрвжения не подгружаем
             val text = Html.fromHtml(mNote.text)
             mNoteText.setText(Html.fromHtml(text.toString()))
             // Блокируем кнопку
             mInsertImageButton.isClickable = false
+        }
+
+        // Добавляем картинки в мэп
+        mSpans = mutableMapOf()
+        val spans = mNoteText.text.getSpans(0, mNoteText.length(), ImageSpan::class.java)
+        spans.forEach { span ->
+            val index = mNoteText.text.getSpanEnd(span)
+            mSpans[index] = span
         }
 
         // Проверяем на наличие корректной темы (бежим по списку тем и ищем совпадение в названии)
@@ -321,6 +331,7 @@ class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
         APP_ACTIVITY.title = mNote.name
     }
 
+    @SuppressLint("SdCardPath")
     private fun saveNote() {
         // Сохраняем текст в Html чтобы сохранить стилизацию
         var text = mNoteText.text
@@ -328,12 +339,23 @@ class NoteFragment(var mNote: NoteModel) : Fragment(R.layout.fragment_note) {
         // Получаем список изображений
         val spans = text.getSpans(0, text.length, ImageSpan::class.java)
 
+        // Удаляем файлы фотографий, которые не используются
+        mSpans.forEach {
+            if (text.getSpanEnd(it.value) == -1) {
+                val source = it.value.source
+                val path = "/data/data/com.stgroup.enote/files/IMG_$source.jpg"
+                val photoFile = File(path)
+                photoFile.delete()
+            }
+        }
+
         // Преобразовываем их в html формат для сохранения
         spans.forEach { span ->
-            val index = text.getSpanStart(span)
+            val indexStart = text.getSpanStart(span)
+
             val source = span.source
             text.removeSpan(span)
-            text = text.replace(index, index + 1, "<img src=\"$source\"/>")
+            text = text.replace(indexStart, indexStart + 1, "<img src=\"$source\"/>")
         }
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
