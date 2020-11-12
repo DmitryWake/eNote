@@ -156,7 +156,7 @@ class NoteFragment(private var mNote: NoteModel) : Fragment(R.layout.fragment_no
         val selStart = mNoteText.selectionStart
         val selEnd = mNoteText.selectionEnd
 
-        val htmlImage = "<img src=\"$imageID\"/>"
+        val htmlImage = "<img src=\"$imageID\" >"
 
         val text = mNoteText.text.replace(selStart, selEnd, htmlImage)
 
@@ -287,26 +287,24 @@ class NoteFragment(private var mNote: NoteModel) : Fragment(R.layout.fragment_no
         // Если версия андроид больше или равна 24, то разрешаем отображение картинок
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
             // Получаем сохраненный текст
-            val text = Html.fromHtml(mNote.text, Html.FROM_HTML_MODE_COMPACT)
-            // Преобразоываем HTML
-            mNoteText.setText(
-                Html.fromHtml(
-                    text.toString(),
-                    Html.FROM_HTML_MODE_COMPACT,
-                    { source ->
-                        val path = "/data/data/com.stgroup.enote/files/IMG_$source.jpg"
-                        // Получаем изображение из пути
-                        val drawable = BitmapDrawable.createFromPath(path)
-                        drawable?.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
-                        drawable
-                    },
-                    null
-                )
+            val text = Html.fromHtml(
+                mNote.text,
+                Html.FROM_HTML_MODE_LEGACY,
+                { source ->
+                    val path = "/data/data/com.stgroup.enote/files/IMG_$source.jpg"
+                    // Получаем изображение из пути
+                    val drawable = BitmapDrawable.createFromPath(path)
+                    drawable?.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+                    drawable
+                },
+                null
             )
+
+            mNoteText.setText(text)
         } else {
             // Если версия андроид меньше, изобрвжения не подгружаем
             val text = Html.fromHtml(mNote.text)
-            mNoteText.setText(Html.fromHtml(text.toString()))
+            mNoteText.setText(text)
             // Блокируем кнопку
             mInsertImageButton.isClickable = false
         }
@@ -355,7 +353,7 @@ class NoteFragment(private var mNote: NoteModel) : Fragment(R.layout.fragment_no
 
             val source = span.source
             text.removeSpan(span)
-            text = text.replace(indexStart, indexStart + 1, "<img src=\"$source\"/>")
+            text = text.replace(indexStart, indexStart + 1, "<img src=\"$source\" >")
         }
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
@@ -363,6 +361,9 @@ class NoteFragment(private var mNote: NoteModel) : Fragment(R.layout.fragment_no
         } else {
             mNote.text = Html.toHtml(text)
         }
+
+        // Заменяем теги
+        mNote.text = mNote.text.replace("&lt;", "<").replace("&gt;", ">")
 
         if (mCurrentThemeName.isNotEmpty())
             mNote.background = mCurrentThemeName
