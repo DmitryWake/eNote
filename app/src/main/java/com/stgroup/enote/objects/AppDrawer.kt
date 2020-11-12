@@ -1,5 +1,6 @@
 package com.stgroup.enote.objects
 
+import android.view.View
 import androidx.drawerlayout.widget.DrawerLayout
 import com.mikepenz.materialdrawer.AccountHeader
 import com.mikepenz.materialdrawer.AccountHeaderBuilder
@@ -8,8 +9,15 @@ import com.mikepenz.materialdrawer.DrawerBuilder
 import com.mikepenz.materialdrawer.model.DividerDrawerItem
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
 import com.stgroup.enote.R
+import com.stgroup.enote.screens.RubbishFragment
+import com.stgroup.enote.screens.SettingsFragment
+import com.stgroup.enote.screens.main_menu_screen.MainMenuFragment
 import com.stgroup.enote.utilities.APP_ACTIVITY
+import com.stgroup.enote.utilities.showToast
+import com.stgroup.enote.utilities.replaceFragment
+
 
 class AppDrawer {
 
@@ -46,8 +54,24 @@ class AppDrawer {
                 DividerDrawerItem(),
                 SecondaryDrawerItem().withIdentifier(400).withName(R.string.version_icon).withBadge(R.string.app_version)
                     .withIcon(R.drawable.ic_info).withEnabled(false)
-            )
+            ).withOnDrawerItemClickListener(object: Drawer.OnDrawerItemClickListener {
+                override fun onItemClick(view : View?, position : Int, drawerItem : IDrawerItem<*>) : Boolean
+                {
+                    chooseItem(position)
+                    return false
+                }
+            })
             .build()
+    }
+
+    private fun chooseItem(position : Int) {
+
+        when (position) {
+            1 -> replaceFragment(MainMenuFragment())
+            //3 -> replaceFragment(RubbishFragment())
+            5 -> replaceFragment(SettingsFragment())
+            6 -> APP_ACTIVITY.showToast("Sharing is good!")
+        }
     }
 
     fun disableDrawer() {
