@@ -10,4 +10,7 @@
     <string name="continue_button_cd">Продолжить</string>
     <string name="letter_image_cd">Изображение письма</string>
     <string name="input_code">Мы отправили код на ваш номер. Введите его ниже:</string>
+    <string name="log_in_button">Войти</string>
+    <string name="log_out_button">Выйти</string>
+    <string name="logged_in_text">Защищённая синхронизация включена</string>
 </resources>
