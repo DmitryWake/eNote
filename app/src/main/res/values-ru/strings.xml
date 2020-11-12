@@ -6,4 +6,8 @@
     <string name="settings_icon">Настройки</string>
     <string name="share_icon">Поделиться</string>
     <string name="version_icon">Версия</string>
+    <string name="input_phone_number">Введите номер телефона</string>
+    <string name="continue_button_cd">Продолжить</string>
+    <string name="letter_image_cd">Изображение письма</string>
+    <string name="input_code">Мы отправили код на ваш номер. Введите его ниже:</string>
 </resources>
