@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/input_code_TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:padding="16dp"
+        android:text="@string/input_code"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/largeTextSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/input_code_TextView"
+        app:srcCompat="@android:drawable/sym_action_email"
+        android:contentDescription="@string/letter_image_cd" />
+
+    <EditText
+        android:id="@+id/editTextCode4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/edit_text_border"
+        android:hint="@string/code_hint"
+        android:importantForAutofill="no"
+        android:inputType="number"
+        android:padding="8dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/largeTextSize"
+        app:layout_constraintEnd_toStartOf="@+id/editTextCode5"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/editTextCode3"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <EditText
+        android:id="@+id/editTextCode3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/edit_text_border"
+        android:hint="@string/code_hint"
+        android:importantForAutofill="no"
+        android:inputType="number"
+        android:padding="8dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/largeTextSize"
+        app:layout_constraintEnd_toStartOf="@+id/editTextCode4"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/editTextCode2"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <EditText
+        android:id="@+id/editTextCode1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/edit_text_border"
+        android:hint="@string/code_hint"
+        android:importantForAutofill="no"
+        android:inputType="number"
+        android:padding="8dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/largeTextSize"
+        app:layout_constraintEnd_toStartOf="@+id/editTextCode2"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <EditText
+        android:id="@+id/editTextCode6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/edit_text_border"
+        android:hint="@string/code_hint"
+        android:importantForAutofill="no"
+        android:inputType="number"
+        android:padding="8dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/largeTextSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/editTextCode5"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <EditText
+        android:id="@+id/editTextCode2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/edit_text_border"
+        android:hint="@string/code_hint"
+        android:importantForAutofill="no"
+        android:inputType="number"
+        android:padding="8dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/largeTextSize"
+        app:layout_constraintEnd_toStartOf="@+id/editTextCode3"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/editTextCode1"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <EditText
+        android:id="@+id/editTextCode5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/edit_text_border"
+        android:hint="@string/code_hint"
+        android:importantForAutofill="no"
+        android:inputType="number"
+        android:padding="8dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/largeTextSize"
+        app:layout_constraintEnd_toStartOf="@+id/editTextCode6"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/editTextCode4"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
