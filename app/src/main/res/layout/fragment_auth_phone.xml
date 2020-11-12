@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editTextPhone"
+        android:id="@+id/phone_EditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -37,18 +37,17 @@
         android:importantForAutofill="no" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/continue_floatingActionButton"
+        android:id="@+id/continue_FloatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:clickable="true"
+        android:contentDescription="@string/continue_button_cd"
         android:focusable="true"
-        android:rotation="180"
+        android:src="@drawable/ic_baseline_arrow_forward_24"
         app:backgroundTint="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/abc_vector_test"
-        android:contentDescription="@string/continue_button_cd" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
