@@ -10,6 +10,7 @@ import com.stgroup.enote.utilities.APP_ACTIVITY
 import com.stgroup.enote.utilities.CATEGORIES_STORAGE
 import com.stgroup.enote.utilities.STORAGE_CATEGORIES_ID
 import kotlinx.android.synthetic.main.fragment_main_menu.*
+import java.util.*
 
 class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
 
@@ -25,6 +26,19 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
         if (categoryList.isEmpty())
             initCategories()
         initRecyclerView()
+        initFunctions()
+    }
+
+    private fun initFunctions() {
+        main_menu_btn_add.setOnClickListener {
+            addCategory()
+        }
+    }
+
+    private fun addCategory() {
+        categoryList.add(CategoryModel(UUID.randomUUID().toString(), "New category", 3))
+        categoryList.sortBy { it.priority }
+        mAdapter.updateData(categoryList)
     }
 
     private fun initCategories() {
@@ -34,12 +48,12 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
             categoryList.add(categoryModel)
         }
         if (categoryList.isEmpty()) {
-            categoryList.add(CategoryModel(0, "Today"))
-            categoryList.add(CategoryModel(1, "Tomorrow"))
-            categoryList.add(CategoryModel(2, "Unsorted"))
+            categoryList.add(CategoryModel("0", "Today", 1))
+            categoryList.add(CategoryModel("1", "Tomorrow", 2))
+            categoryList.add(CategoryModel("2", "Unsorted", 3))
         }
         categoryList.sortBy {
-            it.id
+            it.priority
         }
     }
 

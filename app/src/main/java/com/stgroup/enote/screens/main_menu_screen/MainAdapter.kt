@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.stgroup.enote.R
 import com.stgroup.enote.models.CategoryModel
 
-class MainAdapter(private val dataList: MutableList<CategoryModel>) :
+class MainAdapter(private var dataList: MutableList<CategoryModel>) :
     RecyclerView.Adapter<CategoryViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
         val view =
@@ -19,4 +19,9 @@ class MainAdapter(private val dataList: MutableList<CategoryModel>) :
     }
 
     override fun getItemCount(): Int = dataList.size
+
+    fun updateData(newData: MutableList<CategoryModel>) {
+        dataList = newData
+        notifyDataSetChanged()
+    }
 }
