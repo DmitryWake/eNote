@@ -12,6 +12,7 @@ import com.stgroup.enote.utilities.NOTES_STORAGE
 import com.stgroup.enote.utilities.STORAGE_NOTES_ID
 import com.stgroup.enote.utilities.hideKeyboard
 import kotlinx.android.synthetic.main.fragment_category.*
+import java.util.*
 
 class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.fragment_category) {
 
@@ -22,8 +23,21 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
 
     override fun onStart() {
         super.onStart()
+        initFunctions()
         initNoteList()
         initRecyclerView()
+    }
+
+    private fun initFunctions() {
+        category_btn_add.setOnClickListener {
+            addNote()
+        }
+    }
+
+    // Временно
+    private fun addNote() {
+        mNoteList.add(NoteModel(UUID.randomUUID().toString(), "New note", category.name))
+        mAdapter.updateData(mNoteList)
     }
 
     override fun onPause() {
