@@ -13,6 +13,9 @@ import android.text.style.ImageSpan
 import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
@@ -86,6 +89,39 @@ class NoteFragment(private var mNote: NoteModel) : Fragment(R.layout.fragment_no
     // Получаем ассеты
     private val mAssets: AssetManager = APP_ACTIVITY.assets
 
+    private var isNoteDeleted = false
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        activity?.menuInflater?.inflate(R.menu.note_action_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.delete_note -> deleteNote()
+            R.id.rename_note -> renameNote()
+        }
+        return true
+    }
+
+    private fun renameNote() {
+        APP_ACTIVITY.showToast("It will rename your Note")
+    }
+
+    private fun deleteNote() {
+        NOTES_STORAGE.edit().remove("$STORAGE_NOTES_ID:${mNote.id}").apply()
+        val spans = mNoteText.text.getSpans(0, mNoteText.text.length, ImageSpan::class.java)
+
+        // Удаляем файлы фотографий, которые не используются
+        mSpans.forEach {
+            val source = it.value.source
+            val path = "/data/data/com.stgroup.enote/files/IMG_$source.jpg"
+            val photoFile = File(path)
+            photoFile.delete()
+        }
+        isNoteDeleted = true
+        fragmentManager?.popBackStack()
+    }
+
     override fun onStart() {
         super.onStart()
         initFields()
@@ -99,11 +135,14 @@ class NoteFragment(private var mNote: NoteModel) : Fragment(R.layout.fragment_no
             initRecyclerView()
 
         loadNote()
+
+        setHasOptionsMenu(true)
     }
 
     override fun onPause() {
         super.onPause()
-        saveNote()
+        if (!isNoteDeleted)
+            saveNote()
     }
 
     private fun initFunctions() {

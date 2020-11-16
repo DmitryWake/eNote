@@ -6,4 +6,7 @@
     <string name="settings_icon">Настройки</string>
     <string name="share_icon">Поделиться</string>
     <string name="version_icon">Версия</string>
+    <string name="settings">Настройки</string>
+    <string name="rename">Переименовать</string>
+    <string name="delete">Удалить</string>
 </resources>

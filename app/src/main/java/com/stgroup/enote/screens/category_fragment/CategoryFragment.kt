@@ -62,6 +62,10 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
                 mNoteList.add(note)
         }
         mNoteList.sortBy { it.id }
+
+        /*if (mNoteList.isEmpty()) {
+            mNoteList.add(NoteModel(UUID.randomUUID().toString(), "New note", category.name))
+        }*/
     }
 
     override fun onResume() {
