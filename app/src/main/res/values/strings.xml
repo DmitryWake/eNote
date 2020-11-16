@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">eNote</string>
     <string name="home_icon">Home</string>
@@ -5,6 +6,15 @@
     <string name="settings_icon">Settings</string>
     <string name="share_icon">Share</string>
     <string name="version_icon">Version</string>
+    <string name="input_phone_number">Input your phone number</string>
+    <string name="continue_button_cd">Continue</string>
+    <string name="letter_image_cd">Letter image</string>
+    <string name="input_code">We sent a code to your number. Input it here:</string>
+    <string name="log_in_button">Log in</string>
+    <string name="log_out_button">Log out</string>
+    <string name="logged_in_text">You are logged in</string>
+    <string name="phone_hint" translatable="false">+7 (999) 999 99-99</string>
+    <string name="code_hint" translatable="false">0</string>
     <string name="app_version" translatable="false">0.1</string>
     <string name="u_text" translatable="false"><u>U</u></string>
     <string name="settings">Settings</string>
