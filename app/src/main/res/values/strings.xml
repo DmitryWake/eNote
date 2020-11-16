@@ -17,4 +17,7 @@
     <string name="code_hint" translatable="false">0</string>
     <string name="app_version" translatable="false">0.1</string>
     <string name="u_text" translatable="false"><u>U</u></string>
+    <string name="settings">Settings</string>
+    <string name="delete">Delete</string>
+    <string name="rename">Rename</string>
 </resources>
