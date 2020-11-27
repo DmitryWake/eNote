@@ -66,7 +66,7 @@ fun getFormattedCurrentDate() : String {
 
     return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
         val date = LocalDateTime.now()
-        val formatter : DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM hh:mm")
+        val formatter : DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM kk:mm")
         date.format(formatter)
     }
     else {
@@ -76,7 +76,7 @@ fun getFormattedCurrentDate() : String {
         val hour = cal.get(Calendar.HOUR_OF_DAY)
         val minute = cal.get(Calendar.MINUTE)
 
-        return "$day $month $hour:$minute"
+        "$day $month $hour:$minute"
     }
 
 }
