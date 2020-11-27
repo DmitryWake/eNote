@@ -364,6 +364,8 @@ class NoteFragment(private var mNote: NoteModel) : Fragment(R.layout.fragment_no
                 mNoteText.setTextColor(getThemeTextColour(mCurrentThemeName))
             }
         }
+
+       mDateText.text = if (mNote.dateOfChange.isNotEmpty()) mNote.dateOfChange else mNote.dateOfCreate
         // Заголовок на тулбаре
         APP_ACTIVITY.title = mNote.name
     }
@@ -407,6 +409,7 @@ class NoteFragment(private var mNote: NoteModel) : Fragment(R.layout.fragment_no
         if (mCurrentThemeName.isNotEmpty())
             mNote.background = mCurrentThemeName
 
+        mNote.dateOfChange = getFormattedCurrentDate()
         // Сохраняем NoteModel в строку джсон
         val jsonString = Gson().toJson(mNote)
         // Сохраняем json в хранилище заметок
