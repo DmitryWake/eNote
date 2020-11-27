@@ -109,15 +109,19 @@ class NoteFragment(private var mNote: NoteModel) : Fragment(R.layout.fragment_no
 
     private fun deleteNote() {
         NOTES_STORAGE.edit().remove("$STORAGE_NOTES_ID:${mNote.id}").apply()
+
         val spans = mNoteText.text.getSpans(0, mNoteText.text.length, ImageSpan::class.java)
 
         // Удаляем файлы фотографий, которые не используются
         mSpans.forEach {
-            val source = it.value.source
-            val path = "/data/data/com.stgroup.enote/files/IMG_$source.jpg"
-            val photoFile = File(path)
-            photoFile.delete()
+        val source = it.value.source
+        val path = "/data/data/com.stgroup.enote/files/IMG_$source.jpg"
+        val photoFile = File(path)
+        photoFile.delete()
         }
+
+        val jsonString = Gson().toJson(mNote)
+        NOTES_DELETED.edit().putString("$DELETED_NOTES_ID:${mNote.id}", jsonString).apply()
         isNoteDeleted = true
         fragmentManager?.popBackStack()
     }
