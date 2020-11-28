@@ -13,11 +13,11 @@ fun initFirebase() {
     USER = UserModel()
 }
 
-fun initUser(onSuccess: () -> Unit) {
+fun initUser() {
     DATABASE.collection(COLLECTION_USERS).document(CURRENT_UID).get().addOnSuccessListener {
-        val datamap = it
-        USER.id = datamap[FIELD_ID].toString()
-        USER.phoneNumber = datamap[FIELD_PHONE].toString()
+        val dataMap = it
+        USER.id = dataMap[FIELD_ID].toString()
+        USER.phoneNumber = dataMap[FIELD_PHONE].toString()
     }.addOnFailureListener {
         APP_ACTIVITY.showToast(it.message.toString())
     }
@@ -28,8 +28,12 @@ fun signIn(phoneNumber: String) {
     DATABASE.collection(COLLECTION_USERS).document(uid).set(UserModel(uid, phoneNumber))
         .addOnSuccessListener {
             APP_ACTIVITY.showToast("Вы авторизованы!")
-            initFirebase()
+            initUser()
         }.addOnFailureListener {
-        APP_ACTIVITY.showToast(it.message.toString())
-    }
+            APP_ACTIVITY.showToast(it.message.toString())
+        }
+}
+
+fun sighOut() {
+    AUTH.signOut()
 }

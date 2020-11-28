@@ -14,8 +14,14 @@ android {
         targetSdkVersion 30
         versionCode 1
         versionName "0.01"
+        multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     buildTypes {
@@ -51,5 +57,8 @@ dependencies {
     //Firebase
     implementation platform('com.google.firebase:firebase-bom:26.1.0')
     implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'androidx.browser:browser:1.2.0'
+
+    implementation 'com.android.support:multidex:1.0.3'
 
 }
