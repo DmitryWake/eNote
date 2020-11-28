@@ -11,8 +11,7 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
 import com.stgroup.enote.R
-import com.stgroup.enote.screens.RubbishFragment
-import com.stgroup.enote.screens.SettingsFragment
+import com.stgroup.enote.screens.settings_screen.SettingsFragment
 import com.stgroup.enote.screens.main_menu_screen.MainMenuFragment
 import com.stgroup.enote.utilities.APP_ACTIVITY
 import com.stgroup.enote.utilities.showToast

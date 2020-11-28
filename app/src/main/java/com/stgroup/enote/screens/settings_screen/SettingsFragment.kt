@@ -1,4 +1,4 @@
-package com.stgroup.enote.screens
+package com.stgroup.enote.screens.settings_screen
 
 import android.widget.Button
 import android.widget.TextView
@@ -15,8 +15,6 @@ class SettingsFragment: Fragment(R.layout.fragment_settings) {
     private lateinit var mLogInButton : Button
     private lateinit var mLogOutButton : Button
     private lateinit var mPhoneNumber : TextView
-
-
 
     override fun onResume() {
         super.onResume()
@@ -36,6 +34,4 @@ class SettingsFragment: Fragment(R.layout.fragment_settings) {
         mLogInButton.setOnClickListener { replaceFragment(AuthPhoneFragment())}
         mLogOutButton.setOnClickListener { APP_ACTIVITY.showToast("You logged out") }
     }
-
-
 }

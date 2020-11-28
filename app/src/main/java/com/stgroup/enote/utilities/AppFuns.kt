@@ -7,6 +7,11 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.stgroup.enote.MainActivity
 import com.stgroup.enote.R
+import java.text.DateFormatSymbols
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Date
+import java.util.Calendar
 
 fun replaceFragment(fragment: Fragment, addToBackStack: Boolean = true) {
     // Use addToBackStack true if you want to add fragment to stack
@@ -56,3 +61,22 @@ fun getThemeTextColour(themeName: String): Int =
         "NightSky" -> ContextCompat.getColor(APP_ACTIVITY, R.color.colorAccent)
         else -> ContextCompat.getColor(APP_ACTIVITY, R.color.colorBlack)
     }
+
+fun getFormattedCurrentDate() : String {
+
+    return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+        val date = LocalDateTime.now()
+        val formatter : DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM kk:mm")
+        date.format(formatter)
+    }
+    else {
+        val cal = Calendar.getInstance().apply { time = Date() }
+        val day = cal.get(Calendar.DAY_OF_MONTH)
+        val month = DateFormatSymbols().months[cal.get(Calendar.MONTH)]
+        val hour = cal.get(Calendar.HOUR_OF_DAY)
+        val minute = cal.get(Calendar.MINUTE)
+
+        "$day $month $hour:$minute"
+    }
+
+}

@@ -1,4 +1,4 @@
-package com.stgroup.enote.screens
+package com.stgroup.enote.screens.settings_screen
 
 
 import android.text.Editable
@@ -23,7 +23,6 @@ class AuthPhoneFragment : Fragment(R.layout.fragment_auth_phone) {
         super.onResume()
         initFields()
         initFunc()
-        APP_ACTIVITY.mDrawer.enableDrawer()
     }
 
     private fun initFields() {

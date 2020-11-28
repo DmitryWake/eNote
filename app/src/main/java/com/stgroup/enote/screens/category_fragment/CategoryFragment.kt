@@ -7,10 +7,7 @@ import com.google.gson.Gson
 import com.stgroup.enote.R
 import com.stgroup.enote.models.CategoryModel
 import com.stgroup.enote.models.NoteModel
-import com.stgroup.enote.utilities.APP_ACTIVITY
-import com.stgroup.enote.utilities.NOTES_STORAGE
-import com.stgroup.enote.utilities.STORAGE_NOTES_ID
-import com.stgroup.enote.utilities.hideKeyboard
+import com.stgroup.enote.utilities.*
 import kotlinx.android.synthetic.main.fragment_category.*
 import java.util.*
 
@@ -36,7 +33,7 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
 
     // Временно
     private fun addNote() {
-        mNoteList.add(NoteModel(UUID.randomUUID().toString(), "New note", category.name))
+        mNoteList.add(NoteModel(UUID.randomUUID().toString(), "New note", category.name, dateOfCreate=getFormattedCurrentDate()))
         mAdapter.updateData(mNoteList)
     }
 
