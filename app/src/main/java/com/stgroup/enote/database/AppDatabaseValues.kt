@@ -10,6 +10,9 @@ lateinit var AUTH: FirebaseAuth
 lateinit var CURRENT_UID: String
 
 const val COLLECTION_USERS = "users"
+const val COLLECTION_CATEGORIES = "categories"
 
 const val FIELD_ID = "id"
 const val FIELD_PHONE = "phoneNumber"
+const val FIELD_NAME = "name"
+const val FIELD_PRIORITY = "priority"
