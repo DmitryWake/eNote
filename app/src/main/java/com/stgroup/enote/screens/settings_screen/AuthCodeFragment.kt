@@ -7,6 +7,7 @@ import com.google.firebase.auth.PhoneAuthProvider
 import com.stgroup.enote.R
 import com.stgroup.enote.database.AUTH
 import com.stgroup.enote.database.signIn
+import com.stgroup.enote.objects.CodeTextWatcher
 import com.stgroup.enote.utilities.APP_ACTIVITY
 import com.stgroup.enote.utilities.replaceFragment
 import com.stgroup.enote.utilities.showToast
@@ -25,6 +26,21 @@ class AuthCodeFragment(private val phoneNumber: String, private val uid: String)
     private fun initFuncs() {
         APP_ACTIVITY.title = phoneNumber
         editTextCode1.requestFocus()
+        editTextCode1.addTextChangedListener(CodeTextWatcher {
+            editTextCode2.requestFocus()
+        })
+        editTextCode2.addTextChangedListener(CodeTextWatcher {
+            editTextCode3.requestFocus()
+        })
+        editTextCode3.addTextChangedListener(CodeTextWatcher {
+            editTextCode4.requestFocus()
+        })
+        editTextCode4.addTextChangedListener(CodeTextWatcher {
+            editTextCode5.requestFocus()
+        })
+        editTextCode5.addTextChangedListener(CodeTextWatcher {
+            editTextCode6.requestFocus()
+        })
         editTextCode6.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
@@ -50,7 +66,7 @@ class AuthCodeFragment(private val phoneNumber: String, private val uid: String)
         val credential = PhoneAuthProvider.getCredential(uid, code)
         AUTH.signInWithCredential(credential).addOnSuccessListener {
             signIn(phoneNumber)
-            replaceFragment(SettingsFragment(), false)
+            replaceFragment(SettingsFragment(), true)
         }.addOnFailureListener {
             APP_ACTIVITY.showToast(it.message.toString())
         }
