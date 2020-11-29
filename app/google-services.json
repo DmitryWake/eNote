@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "998171929555",
+    "firebase_url": "https://enote-f8e8c.firebaseio.com",
+    "project_id": "enote-f8e8c",
+    "storage_bucket": "enote-f8e8c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:998171929555:android:d262ac59da15049240dd26",
+        "android_client_info": {
+          "package_name": "com.stgroup.enote"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "998171929555-i1dtagtfo79uqipukh4l4o8ter808lnn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCygstmEfRh27PViNolNdC3abB50dygl_I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "998171929555-i1dtagtfo79uqipukh4l4o8ter808lnn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

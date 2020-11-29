@@ -3,6 +3,8 @@ package com.stgroup.enote
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.stgroup.enote.database.initFirebase
+import com.stgroup.enote.database.initUser
 import com.stgroup.enote.databinding.ActivityMainBinding
 import com.stgroup.enote.objects.AppDrawer
 import com.stgroup.enote.screens.main_menu_screen.MainMenuFragment
@@ -21,6 +23,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
+        initFirebase()
+        initUser()
         initFields()
         initLocalBase()
         initFunc()

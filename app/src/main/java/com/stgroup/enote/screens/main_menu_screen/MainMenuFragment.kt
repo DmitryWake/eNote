@@ -1,10 +1,15 @@
 package com.stgroup.enote.screens.main_menu_screen
 
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.stgroup.enote.R
+import com.stgroup.enote.database.CURRENT_UID
+import com.stgroup.enote.database.deleteAllCategories
+import com.stgroup.enote.database.saveCategoriesToDatabase
+import com.stgroup.enote.database.synchronizeCategories
 import com.stgroup.enote.models.CategoryModel
 import com.stgroup.enote.utilities.APP_ACTIVITY
 import com.stgroup.enote.utilities.CATEGORIES_STORAGE
@@ -27,6 +32,47 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
             initCategories()
         initRecyclerView()
         initFunctions()
+        if (CURRENT_UID != "null") {
+            synchronizeCategories {
+                compareLists(it)
+            }
+        }
+    }
+
+    private fun compareLists(it: MutableList<CategoryModel>) {
+        if (!it.isNullOrEmpty()) {
+            it.sortBy { it.priority }
+            if (categoryList.isNotEmpty()) {
+                var isEquals = true
+                var title =
+                    "Список категорий в облаке отличается от вашего\nОтличающиеся категории: "
+                it.forEach { categoryModel ->
+                    if (!categoryList.contains(categoryModel)) {
+                        title += "${categoryModel.name}, "
+                        isEquals = false
+                    }
+                }
+                categoryList.forEach { categoryModel ->
+                    if (!it.contains(categoryModel)) {
+                        title += "${categoryModel.name}, "
+                        isEquals = false
+                    }
+                }
+                if (!isEquals) {
+                    AlertDialog.Builder(APP_ACTIVITY)
+                        .setTitle(title)
+                        .setPositiveButton("Обновить") { _, _ ->
+                            categoryList = it
+                            mAdapter.updateData(categoryList)
+                        }
+                        .setNegativeButton("Отмена") { _, _ ->
+                            deleteAllCategories(it)
+                        }
+                        .show()
+                }
+
+            }
+        }
     }
 
     private fun initFunctions() {
@@ -73,6 +119,8 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
     override fun onPause() {
         super.onPause()
         saveCategories()
+        if (CURRENT_UID != "null")
+            saveCategoriesToDatabase(categoryList)
     }
 
     private fun saveCategories() {

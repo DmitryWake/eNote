@@ -18,4 +18,5 @@
     <string name="logged_in_text">Защищённая синхронизация включена</string>
     <string name="edit_name_title">Введите новое имя заметки</string>
     <string name="edit_name_hint">Новое имя</string>
+    <string name="enter_with_phone_text">Войдите с помощью номера телефона, чтобы пользоваться синхронизацией</string>
 </resources>
