@@ -9,6 +9,7 @@
     <string name="settings">Настройки</string>
     <string name="rename">Переименовать</string>
     <string name="delete">Удалить</string>
+    <string name="change_priority">Изменить приоритет</string>
     <string name="input_phone_number">Введите номер телефона</string>
     <string name="continue_button_cd">Продолжить</string>
     <string name="letter_image_cd">Изображение письма</string>

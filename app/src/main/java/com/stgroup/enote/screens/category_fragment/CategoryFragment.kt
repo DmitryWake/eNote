@@ -1,5 +1,8 @@
 package com.stgroup.enote.screens.category_fragment
 
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,11 +21,38 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
 
     private lateinit var mNoteList: MutableList<NoteModel>
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        activity?.menuInflater?.inflate(R.menu.category_action_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.rename_category -> renameCategory()
+            R.id.delete_category -> deleteCategory()
+            R.id.change_priority -> changePriority()
+        }
+        return true
+    }
+
+    private fun renameCategory() {
+        APP_ACTIVITY.showToast("Renaming category")
+    }
+
+    private fun deleteCategory() {
+        APP_ACTIVITY.showToast("Deleting category")
+    }
+
+    private fun changePriority() {
+        APP_ACTIVITY.showToast("Changing priority")
+    }
+
     override fun onStart() {
         super.onStart()
         initFunctions()
         initNoteList()
         initRecyclerView()
+
+        setHasOptionsMenu(true)
     }
 
     private fun initFunctions() {
