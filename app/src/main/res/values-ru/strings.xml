@@ -17,7 +17,10 @@
     <string name="log_in_button">Войти</string>
     <string name="log_out_button">Выйти</string>
     <string name="logged_in_text">Защищённая синхронизация включена</string>
+    <string name="restore">Восстановить</string>
+    <string name="clean_trash">Очистить корзину</string>
     <string name="edit_name_title">Введите новое имя</string>
     <string name="edit_name_hint">Новое имя</string>
+    <string name="change_priority_title">Введите новый приоритет</string>
     <string name="enter_with_phone_text">Войдите с помощью номера телефона, чтобы пользоваться синхронизацией</string>
 </resources>

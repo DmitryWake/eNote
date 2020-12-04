@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.EditText
+import android.widget.NumberPicker
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,6 +16,7 @@ import com.google.gson.Gson
 import com.stgroup.enote.R
 import com.stgroup.enote.models.CategoryModel
 import com.stgroup.enote.models.NoteModel
+import com.stgroup.enote.screens.main_menu_screen.MainMenuFragment
 import com.stgroup.enote.utilities.*
 import kotlinx.android.synthetic.main.fragment_category.*
 import java.util.*
@@ -26,8 +28,10 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
 
     private lateinit var mNoteList: MutableList<NoteModel>
 
+    private var isCategoryDeleted = false
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        activity?.menuInflater?.inflate(R.menu.category_action_menu, menu)
+        APP_ACTIVITY.menuInflater.inflate(R.menu.category_action_menu, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -44,9 +48,7 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
         var newCategoryName = ""
 
         val dialogView = LayoutInflater.from(APP_ACTIVITY).inflate(R.layout.dialog_rename, null)
-        val input : EditText = dialogView.findViewById(R.id.input_new_name)
-
-        input.addTextChangedListener(object : TextWatcher {
+        dialogView.findViewById<EditText>(R.id.input_new_name).addTextChangedListener(object : TextWatcher {
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
@@ -68,11 +70,37 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
     }
 
     private fun deleteCategory() {
-        APP_ACTIVITY.showToast("Deleting category")
+        mNoteList.forEach {
+            it.category = "Unsorted"
+            it.inTrash = true
+        }
+        MainMenuFragment.categoryList.remove(category)
+        CATEGORIES_STORAGE.edit().remove("$STORAGE_CATEGORIES_ID:${category.id}").apply()
+        isCategoryDeleted = true
+        fragmentManager?.popBackStack()
     }
 
     private fun changePriority() {
-        APP_ACTIVITY.showToast("Changing priority")
+
+        var newPriority = category.priority
+
+        val dialogView = LayoutInflater.from(APP_ACTIVITY).inflate(R.layout.dialog_change_priority, null)
+        with(dialogView.findViewById<NumberPicker>(R.id.number_picker)){
+            maxValue = 20
+            minValue = 0
+            value = newPriority
+            setOnValueChangedListener { _, _, newVal ->
+                newPriority = newVal
+            }
+        }
+
+        AlertDialog.Builder(APP_ACTIVITY)
+            .setTitle(R.string.change_priority_title)
+            .setView(dialogView)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                category.priority = newPriority
+                MainMenuFragment.categoryList.sortBy { it.priority }}
+            .show()
     }
 
     override fun onStart() {
@@ -99,7 +127,8 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
     override fun onPause() {
         super.onPause()
         saveNoteList()
-        saveCategory()
+        if (!isCategoryDeleted)
+            saveCategory()
     }
 
     private fun saveNoteList() {
