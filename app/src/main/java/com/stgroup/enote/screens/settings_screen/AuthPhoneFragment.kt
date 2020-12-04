@@ -62,6 +62,7 @@ class AuthPhoneFragment : Fragment(R.layout.fragment_auth_phone) {
             APP_ACTIVITY.showToast("Введите номер")
         } else {
             authUser()
+            APP_ACTIVITY.showToast("Проверка...")
         }
     }
 
