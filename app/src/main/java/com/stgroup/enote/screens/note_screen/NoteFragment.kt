@@ -1,28 +1,26 @@
 package com.stgroup.enote.screens.note_screen
 
 import android.annotation.SuppressLint
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.AssetManager
 import android.graphics.Typeface
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.text.Html
-import android.text.SpannableString
-import android.text.Spanned
+import android.text.*
 import android.text.style.ImageSpan
 import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
 import android.util.Log
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.FileProvider
+import androidx.core.view.marginEnd
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -115,7 +113,30 @@ class NoteFragment(private var mNote: NoteModel) : Fragment(R.layout.fragment_no
     }
 
     private fun renameNote() {
-        APP_ACTIVITY.showToast("It will rename your Note")
+
+        var newNoteName = ""
+
+        val input = EditText(APP_ACTIVITY).apply {
+            setHint(R.string.edit_name_hint)
+            addTextChangedListener(object : TextWatcher {
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    newNoteName = s.toString()
+                }
+
+                override fun afterTextChanged(s: Editable?) {}
+            })
+        }
+
+        AlertDialog.Builder(APP_ACTIVITY)
+            .setTitle(R.string.edit_name_title)
+            .setView(input)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                APP_ACTIVITY.title = newNoteName
+                mNote.name = newNoteName }
+            .show()
     }
 
     private fun deleteNote() {
@@ -382,6 +403,8 @@ class NoteFragment(private var mNote: NoteModel) : Fragment(R.layout.fragment_no
                 mNoteText.setTextColor(getThemeTextColour(mCurrentThemeName))
             }
         }
+
+       mDateText.text = if (mNote.dateOfChange.isNotEmpty()) mNote.dateOfChange else mNote.dateOfCreate
         // Заголовок на тулбаре
         APP_ACTIVITY.title = mNote.name
     }
@@ -425,6 +448,7 @@ class NoteFragment(private var mNote: NoteModel) : Fragment(R.layout.fragment_no
         if (mCurrentThemeName.isNotEmpty())
             mNote.background = mCurrentThemeName
 
+        mNote.dateOfChange = getFormattedCurrentDate()
         // Сохраняем NoteModel в строку джсон
         val jsonString = Gson().toJson(mNote)
         // Сохраняем json в хранилище заметок
