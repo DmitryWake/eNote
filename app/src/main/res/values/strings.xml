@@ -21,7 +21,7 @@
     <string name="delete">Delete</string>
     <string name="rename">Rename</string>
     <string name="change_priority">Change priority</string>
-    <string name="edit_name_title">Input new note name</string>
+    <string name="edit_name_title">Input new name</string>
     <string name="edit_name_hint">New name</string>
     <string name="enter_with_phone_text">Войдите с помощью номера телефона, чтобы пользоваться синхронизацией</string>
 </resources>

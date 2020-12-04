@@ -105,23 +105,24 @@ class NoteFragment(private var mNote: NoteModel) : Fragment(R.layout.fragment_no
 
         var newNoteName = ""
 
-        val input = EditText(APP_ACTIVITY).apply {
-            setHint(R.string.edit_name_hint)
-            addTextChangedListener(object : TextWatcher {
+        val dialogView = LayoutInflater.from(APP_ACTIVITY).inflate(R.layout.dialog_rename, null)
+        val input : EditText = dialogView.findViewById(R.id.input_new_name)
 
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        input.addTextChangedListener(object : TextWatcher {
 
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    newNoteName = s.toString()
-                }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-                override fun afterTextChanged(s: Editable?) {}
-            })
-        }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                newNoteName = s.toString()
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
 
         AlertDialog.Builder(APP_ACTIVITY)
             .setTitle(R.string.edit_name_title)
-            .setView(input)
+            .setView(dialogView)
             .setPositiveButton(android.R.string.ok) { _, _ ->
                 APP_ACTIVITY.title = newNoteName
                 mNote.name = newNoteName }

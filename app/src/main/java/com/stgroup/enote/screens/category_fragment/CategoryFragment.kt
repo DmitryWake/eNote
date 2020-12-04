@@ -1,8 +1,13 @@
 package com.stgroup.enote.screens.category_fragment
 
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -35,7 +40,31 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
     }
 
     private fun renameCategory() {
-        APP_ACTIVITY.showToast("Renaming category")
+
+        var newCategoryName = ""
+
+        val dialogView = LayoutInflater.from(APP_ACTIVITY).inflate(R.layout.dialog_rename, null)
+        val input : EditText = dialogView.findViewById(R.id.input_new_name)
+
+        input.addTextChangedListener(object : TextWatcher {
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                newCategoryName = s.toString()
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+
+        AlertDialog.Builder(APP_ACTIVITY)
+            .setTitle(R.string.edit_name_title)
+            .setView(dialogView)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                APP_ACTIVITY.title = newCategoryName
+                category.name = newCategoryName }
+            .show()
     }
 
     private fun deleteCategory() {
@@ -70,6 +99,7 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
     override fun onPause() {
         super.onPause()
         saveNoteList()
+        saveCategory()
     }
 
     private fun saveNoteList() {
@@ -80,6 +110,13 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
             val json = Gson().toJson(it)
             NOTES_STORAGE.edit().putString("$STORAGE_NOTES_ID:${it.id}", json).apply()
         }
+    }
+
+    private fun saveCategory() {
+
+        val jsonObject = Gson().toJson(category)
+        CATEGORIES_STORAGE.edit()
+            .putString("$STORAGE_CATEGORIES_ID:${category.id}", jsonObject).apply()
     }
 
     private fun initRecyclerView() {
