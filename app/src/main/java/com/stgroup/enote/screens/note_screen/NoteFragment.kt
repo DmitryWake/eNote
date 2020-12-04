@@ -92,15 +92,26 @@ class NoteFragment(private var mNote: NoteModel) : Fragment(R.layout.fragment_no
     private var isNoteDeleted = false
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+
         activity?.menuInflater?.inflate(R.menu.note_action_menu, menu)
+        if (!mNote.inTrash){
+            val restore_item: MenuItem = menu.findItem(R.id.restore_note)
+            restore_item.isVisible = false
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.delete_note -> deleteNote()
             R.id.rename_note -> renameNote()
+            R.id.restore_note -> restoreNote()
         }
         return true
+    }
+
+    private fun restoreNote(){
+        mNote.inTrash = false
+        fragmentManager?.popBackStack()
     }
 
     private fun renameNote() {
@@ -108,22 +119,25 @@ class NoteFragment(private var mNote: NoteModel) : Fragment(R.layout.fragment_no
     }
 
     private fun deleteNote() {
-        NOTES_STORAGE.edit().remove("$STORAGE_NOTES_ID:${mNote.id}").apply()
+        if (mNote.inTrash) {
+            NOTES_STORAGE.edit().remove("$STORAGE_NOTES_ID:${mNote.id}").apply()
 
-        val spans = mNoteText.text.getSpans(0, mNoteText.text.length, ImageSpan::class.java)
+            // val spans = mNoteText.text.getSpans(0, mNoteText.text.length, ImageSpan::class.java)
 
-        // Удаляем файлы фотографий, которые не используются
-        mSpans.forEach {
-        val source = it.value.source
-        val path = "/data/data/com.stgroup.enote/files/IMG_$source.jpg"
-        val photoFile = File(path)
-        photoFile.delete()
+            // Удаляем файлы фотографий, которые не используются
+            mSpans.forEach {
+                val source = it.value.source
+                val path = "/data/data/com.stgroup.enote/files/IMG_$source.jpg"
+                val photoFile = File(path)
+                photoFile.delete()
+            }
+            isNoteDeleted = true
         }
+        else{
+            mNote.inTrash = true
+        }
+            fragmentManager?.popBackStack()
 
-        val jsonString = Gson().toJson(mNote)
-        NOTES_DELETED.edit().putString("$DELETED_NOTES_ID:${mNote.id}", jsonString).apply()
-        isNoteDeleted = true
-        fragmentManager?.popBackStack()
     }
 
     override fun onStart() {

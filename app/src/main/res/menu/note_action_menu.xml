@@ -16,6 +16,11 @@
                 android:icon="@drawable/ic_rubbish"
                 android:title="@string/delete"
                 app:showAsAction="never" />
+            <item
+                android:id="@+id/restore_note"
+                android:icon="@drawable/ic_restore_note"
+                android:title="@string/restore"
+                app:showAsAction="never" />
         </menu>
     </item>
 </menu>

@@ -16,4 +16,6 @@
     <string name="log_in_button">Войти</string>
     <string name="log_out_button">Выйти</string>
     <string name="logged_in_text">Защищённая синхронизация включена</string>
+    <string name="restore">Восстановить</string>
+    <string name="clean_trash">Очистить корзину</string>
 </resources>

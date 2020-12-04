@@ -20,4 +20,6 @@
     <string name="settings">Settings</string>
     <string name="delete">Delete</string>
     <string name="rename">Rename</string>
+    <string name="restore">Restore</string>
+    <string name="clean_trash">Empty Trash</string>
 </resources>
