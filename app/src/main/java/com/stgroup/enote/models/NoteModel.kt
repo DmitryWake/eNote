@@ -8,5 +8,6 @@ data class NoteModel(
     var dateOfCreate: String = "",
     var dateOfChange: String = "",
     var dateToComplete: String = "",
-    var background: String = ""
+    var background: String = "",
+    var inTrash: Boolean = false
 )

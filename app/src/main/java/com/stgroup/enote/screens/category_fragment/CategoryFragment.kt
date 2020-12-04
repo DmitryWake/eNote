@@ -136,7 +136,7 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
             val json = NOTES_STORAGE.getString(key, "")
             val note = Gson().fromJson(json, NoteModel::class.java)
             // Если категория заметки совпадает с текущей, то добавляем её в наш список
-            if (note.category == category.name)
+            if (note.category == category.name && !note.inTrash)
                 mNoteList.add(note)
         }
         mNoteList.sortBy { it.id }

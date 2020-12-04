@@ -11,6 +11,7 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
 import com.stgroup.enote.R
+import com.stgroup.enote.screens.rubbish_fragment.RubbishFragment
 import com.stgroup.enote.screens.settings_screen.SettingsFragment
 import com.stgroup.enote.screens.main_menu_screen.MainMenuFragment
 import com.stgroup.enote.utilities.APP_ACTIVITY
@@ -67,7 +68,7 @@ class AppDrawer {
 
         when (position) {
             1 -> replaceFragment(MainMenuFragment())
-            //3 -> replaceFragment(RubbishFragment())
+            3 -> replaceFragment(RubbishFragment())
             5 -> replaceFragment(SettingsFragment())
             6 -> APP_ACTIVITY.showToast("Sharing is good!")
         }

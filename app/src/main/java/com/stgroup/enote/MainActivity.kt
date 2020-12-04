@@ -11,6 +11,7 @@ import com.stgroup.enote.screens.main_menu_screen.MainMenuFragment
 import com.stgroup.enote.utilities.APP_ACTIVITY
 import com.stgroup.enote.utilities.initLocalBase
 import com.stgroup.enote.utilities.replaceFragment
+import com.stgroup.enote.utilities.showToast
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,6 +22,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        this.showToast("Заходит как-то Обама в бар и говорит Hi! А ему в ответ: Що нi то")
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
         initFirebase()

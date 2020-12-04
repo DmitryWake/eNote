@@ -9,7 +9,7 @@ import com.stgroup.enote.database.AUTH
 import com.stgroup.enote.database.signIn
 import com.stgroup.enote.objects.CodeTextWatcher
 import com.stgroup.enote.utilities.APP_ACTIVITY
-import com.stgroup.enote.utilities.replaceFragment
+import com.stgroup.enote.utilities.restartActivity
 import com.stgroup.enote.utilities.showToast
 import kotlinx.android.synthetic.main.fragment_auth_code.*
 
@@ -66,7 +66,7 @@ class AuthCodeFragment(private val phoneNumber: String, private val uid: String)
         val credential = PhoneAuthProvider.getCredential(uid, code)
         AUTH.signInWithCredential(credential).addOnSuccessListener {
             signIn(phoneNumber)
-            replaceFragment(SettingsFragment(), true)
+            restartActivity()
         }.addOnFailureListener {
             APP_ACTIVITY.showToast(it.message.toString())
         }
