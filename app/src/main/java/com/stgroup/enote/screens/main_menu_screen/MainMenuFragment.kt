@@ -6,13 +6,12 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.stgroup.enote.R
-import com.stgroup.enote.database.CURRENT_UID
-import com.stgroup.enote.database.deleteAllCategories
-import com.stgroup.enote.database.saveCategoriesToDatabase
-import com.stgroup.enote.database.synchronizeCategories
+import com.stgroup.enote.database.*
 import com.stgroup.enote.models.CategoryModel
+import com.stgroup.enote.models.NoteModel
 import com.stgroup.enote.utilities.APP_ACTIVITY
 import com.stgroup.enote.utilities.CATEGORIES_STORAGE
+import com.stgroup.enote.utilities.NOTES_STORAGE
 import com.stgroup.enote.utilities.STORAGE_CATEGORIES_ID
 import kotlinx.android.synthetic.main.fragment_main_menu.*
 import java.util.*
@@ -24,18 +23,37 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
 
     companion object {
         var categoryList: MutableList<CategoryModel> = mutableListOf()
+        var noteList: MutableList<NoteModel> = mutableListOf()
     }
 
     override fun onStart() {
         super.onStart()
         if (categoryList.isEmpty())
             initCategories()
+        if (noteList.isEmpty())
+            initNotes()
         initRecyclerView()
         initFunctions()
         if (CURRENT_UID != "null") {
             synchronizeCategories {
                 compareLists(it)
             }
+            synchronizeNotes {
+                compareNotes(it)
+            }
+        }
+    }
+
+    private fun compareNotes(list: MutableList<NoteModel>) {
+
+    }
+
+    private fun initNotes() {
+        for (key: String in NOTES_STORAGE.all.keys) {
+            val json = NOTES_STORAGE.getString(key, "")
+            val note = Gson().fromJson(json, NoteModel::class.java)
+            if (!note.inTrash)
+                noteList.add(note)
         }
     }
 

@@ -3,6 +3,7 @@ package com.stgroup.enote.database
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.stgroup.enote.models.CategoryModel
+import com.stgroup.enote.models.NoteModel
 import com.stgroup.enote.models.UserModel
 import com.stgroup.enote.utilities.APP_ACTIVITY
 import com.stgroup.enote.utilities.showToast
@@ -86,4 +87,23 @@ fun deleteAllCategories(mutableList: MutableList<CategoryModel>) {
             APP_ACTIVITY.showToast(it.message.toString())
         }
     }
+}
+
+fun deleteCategoryInDatabase(category: CategoryModel) {
+    val ref = DATABASE.collection(COLLECTION_USERS).document(CURRENT_UID)
+        .collection(COLLECTION_CATEGORIES)
+    ref.document(category.id).delete().addOnFailureListener {
+        APP_ACTIVITY.showToast(it.message.toString())
+    }
+}
+
+fun saveNotesToDatabase(noteList: MutableList<NoteModel>) {
+    val ref = DATABASE.collection(COLLECTION_USERS).document(CURRENT_UID).collection(
+        COLLECTION_CATEGORIES
+    ).document()
+}
+
+fun synchronizeNotes(function: (MutableList<NoteModel>) -> Unit) {
+    val downloadList = mutableListOf<NoteModel>()
+
 }

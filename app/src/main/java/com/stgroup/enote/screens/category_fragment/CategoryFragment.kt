@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.stgroup.enote.R
+import com.stgroup.enote.database.CURRENT_UID
+import com.stgroup.enote.database.deleteCategoryInDatabase
 import com.stgroup.enote.models.CategoryModel
 import com.stgroup.enote.models.NoteModel
 import com.stgroup.enote.screens.main_menu_screen.MainMenuFragment
@@ -48,16 +50,23 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
         var newCategoryName = ""
 
         val dialogView = LayoutInflater.from(APP_ACTIVITY).inflate(R.layout.dialog_rename, null)
-        dialogView.findViewById<EditText>(R.id.input_new_name).addTextChangedListener(object : TextWatcher {
+        dialogView.findViewById<EditText>(R.id.input_new_name)
+            .addTextChangedListener(object : TextWatcher {
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                newCategoryName = s.toString()
-            }
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    newCategoryName = s.toString()
+                }
 
-            override fun afterTextChanged(s: Editable?) {}
-        })
+                override fun afterTextChanged(s: Editable?) {}
+            })
 
 
         AlertDialog.Builder(APP_ACTIVITY)
@@ -65,18 +74,23 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
             .setView(dialogView)
             .setPositiveButton(android.R.string.ok) { _, _ ->
                 APP_ACTIVITY.title = newCategoryName
-                category.name = newCategoryName }
+                category.name = newCategoryName
+            }
             .show()
     }
 
     private fun deleteCategory() {
         mNoteList.forEach {
-            it.category = "Unsorted"
+            it.categoryId = "2" // Unsorted
             it.inTrash = true
+            MainMenuFragment.noteList.remove(it)
         }
         MainMenuFragment.categoryList.remove(category)
         CATEGORIES_STORAGE.edit().remove("$STORAGE_CATEGORIES_ID:${category.id}").apply()
         isCategoryDeleted = true
+        if (CURRENT_UID != "null") {
+            deleteCategoryInDatabase(category)
+        }
         fragmentManager?.popBackStack()
     }
 
@@ -84,8 +98,9 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
 
         var newPriority = category.priority
 
-        val dialogView = LayoutInflater.from(APP_ACTIVITY).inflate(R.layout.dialog_change_priority, null)
-        with(dialogView.findViewById<NumberPicker>(R.id.number_picker)){
+        val dialogView =
+            LayoutInflater.from(APP_ACTIVITY).inflate(R.layout.dialog_change_priority, null)
+        with(dialogView.findViewById<NumberPicker>(R.id.number_picker)) {
             maxValue = 20
             minValue = 0
             value = newPriority
@@ -99,7 +114,8 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
             .setView(dialogView)
             .setPositiveButton(android.R.string.ok) { _, _ ->
                 category.priority = newPriority
-                MainMenuFragment.categoryList.sortBy { it.priority }}
+                MainMenuFragment.categoryList.sortBy { it.priority }
+            }
             .show()
     }
 
@@ -120,7 +136,14 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
 
     // Временно
     private fun addNote() {
-        mNoteList.add(NoteModel(UUID.randomUUID().toString(), "New note", category.name, dateOfCreate=getFormattedCurrentDate()))
+        mNoteList.add(
+            NoteModel(
+                UUID.randomUUID().toString(),
+                "New note",
+                category.id,
+                dateOfCreate = getFormattedCurrentDate()
+            )
+        )
         mAdapter.updateData(mNoteList)
     }
 
@@ -160,19 +183,11 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
     // Нужно подумать над этим вариантом
     private fun initNoteList() {
         mNoteList = mutableListOf()
-        // Загружаем заметки из хранилища
-        for (key: String in NOTES_STORAGE.all.keys) {
-            val json = NOTES_STORAGE.getString(key, "")
-            val note = Gson().fromJson(json, NoteModel::class.java)
-            // Если категория заметки совпадает с текущей, то добавляем её в наш список
-            if (note.category == category.name && !note.inTrash)
-                mNoteList.add(note)
+        MainMenuFragment.noteList.forEach {
+            if (it.categoryId == category.id && !it.inTrash)
+                mNoteList.add(it)
         }
         mNoteList.sortBy { it.id }
-
-        /*if (mNoteList.isEmpty()) {
-            mNoteList.add(NoteModel(UUID.randomUUID().toString(), "New note", category.name))
-        }*/
     }
 
     override fun onResume() {

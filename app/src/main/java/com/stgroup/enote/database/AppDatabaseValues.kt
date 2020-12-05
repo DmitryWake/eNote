@@ -11,6 +11,7 @@ lateinit var CURRENT_UID: String
 
 const val COLLECTION_USERS = "users"
 const val COLLECTION_CATEGORIES = "categories"
+const val COLLECTION_NOTES = "notes"
 
 const val FIELD_ID = "id"
 const val FIELD_PHONE = "phoneNumber"
