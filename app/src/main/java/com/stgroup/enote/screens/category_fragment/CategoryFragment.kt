@@ -1,5 +1,14 @@
 package com.stgroup.enote.screens.category_fragment
 
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.widget.EditText
+import android.widget.NumberPicker
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -7,6 +16,7 @@ import com.google.gson.Gson
 import com.stgroup.enote.R
 import com.stgroup.enote.models.CategoryModel
 import com.stgroup.enote.models.NoteModel
+import com.stgroup.enote.screens.main_menu_screen.MainMenuFragment
 import com.stgroup.enote.utilities.*
 import kotlinx.android.synthetic.main.fragment_category.*
 import java.util.*
@@ -18,11 +28,88 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
 
     private lateinit var mNoteList: MutableList<NoteModel>
 
+    private var isCategoryDeleted = false
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        APP_ACTIVITY.menuInflater.inflate(R.menu.category_action_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.rename_category -> renameCategory()
+            R.id.delete_category -> deleteCategory()
+            R.id.change_priority -> changePriority()
+        }
+        return true
+    }
+
+    private fun renameCategory() {
+
+        var newCategoryName = ""
+
+        val dialogView = LayoutInflater.from(APP_ACTIVITY).inflate(R.layout.dialog_rename, null)
+        dialogView.findViewById<EditText>(R.id.input_new_name).addTextChangedListener(object : TextWatcher {
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                newCategoryName = s.toString()
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+
+        AlertDialog.Builder(APP_ACTIVITY)
+            .setTitle(R.string.edit_name_title)
+            .setView(dialogView)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                APP_ACTIVITY.title = newCategoryName
+                category.name = newCategoryName }
+            .show()
+    }
+
+    private fun deleteCategory() {
+        mNoteList.forEach {
+            it.category = "Unsorted"
+            it.inTrash = true
+        }
+        MainMenuFragment.categoryList.remove(category)
+        CATEGORIES_STORAGE.edit().remove("$STORAGE_CATEGORIES_ID:${category.id}").apply()
+        isCategoryDeleted = true
+        fragmentManager?.popBackStack()
+    }
+
+    private fun changePriority() {
+
+        var newPriority = category.priority
+
+        val dialogView = LayoutInflater.from(APP_ACTIVITY).inflate(R.layout.dialog_change_priority, null)
+        with(dialogView.findViewById<NumberPicker>(R.id.number_picker)){
+            maxValue = 20
+            minValue = 0
+            value = newPriority
+            setOnValueChangedListener { _, _, newVal ->
+                newPriority = newVal
+            }
+        }
+
+        AlertDialog.Builder(APP_ACTIVITY)
+            .setTitle(R.string.change_priority_title)
+            .setView(dialogView)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                category.priority = newPriority
+                MainMenuFragment.categoryList.sortBy { it.priority }}
+            .show()
+    }
+
     override fun onStart() {
         super.onStart()
         initFunctions()
         initNoteList()
         initRecyclerView()
+
+        setHasOptionsMenu(true)
     }
 
     private fun initFunctions() {
@@ -40,6 +127,8 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
     override fun onPause() {
         super.onPause()
         saveNoteList()
+        if (!isCategoryDeleted)
+            saveCategory()
     }
 
     private fun saveNoteList() {
@@ -50,6 +139,13 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
             val json = Gson().toJson(it)
             NOTES_STORAGE.edit().putString("$STORAGE_NOTES_ID:${it.id}", json).apply()
         }
+    }
+
+    private fun saveCategory() {
+
+        val jsonObject = Gson().toJson(category)
+        CATEGORIES_STORAGE.edit()
+            .putString("$STORAGE_CATEGORIES_ID:${category.id}", jsonObject).apply()
     }
 
     private fun initRecyclerView() {

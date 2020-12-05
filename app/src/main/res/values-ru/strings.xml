@@ -9,6 +9,7 @@
     <string name="settings">Настройки</string>
     <string name="rename">Переименовать</string>
     <string name="delete">Удалить</string>
+    <string name="change_priority">Изменить приоритет</string>
     <string name="input_phone_number">Введите номер телефона</string>
     <string name="continue_button_cd">Продолжить</string>
     <string name="letter_image_cd">Изображение письма</string>
@@ -18,7 +19,8 @@
     <string name="logged_in_text">Защищённая синхронизация включена</string>
     <string name="restore">Восстановить</string>
     <string name="clean_trash">Очистить корзину</string>
-    <string name="edit_name_title">Введите новое имя заметки</string>
+    <string name="edit_name_title">Введите новое имя</string>
     <string name="edit_name_hint">Новое имя</string>
+    <string name="change_priority_title">Введите новый приоритет</string>
     <string name="enter_with_phone_text">Войдите с помощью номера телефона, чтобы пользоваться синхронизацией</string>
 </resources>

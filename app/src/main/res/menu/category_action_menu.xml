@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:icon="@drawable/ic_action_menu"
+        android:title="@string/settings"
+        app:showAsAction="ifRoom">
+        <menu>
+            <item
+                android:id="@+id/rename_category"
+                android:icon="@drawable/ic_edit"
+                android:title="@string/rename"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/delete_category"
+                android:icon="@drawable/ic_rubbish"
+                android:title="@string/delete"
+                app:showAsAction="never" />
+            <item
+                android:id="@+id/change_priority"
+                android:icon="@drawable/ic_baseline_low_priority_24"
+                android:title="@string/change_priority"
+                app:showAsAction="never" />
+        </menu>
+    </item>
+</menu>

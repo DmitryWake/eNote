@@ -23,7 +23,7 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
     private lateinit var mAdapter: MainAdapter
 
     companion object {
-        private var categoryList: MutableList<CategoryModel> = mutableListOf()
+        var categoryList: MutableList<CategoryModel> = mutableListOf()
     }
 
     override fun onStart() {
