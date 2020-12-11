@@ -14,6 +14,7 @@ import com.stgroup.enote.R
 import com.stgroup.enote.database.AUTH
 import com.stgroup.enote.database.signIn
 import com.stgroup.enote.utilities.APP_ACTIVITY
+import com.stgroup.enote.utilities.formatPhoneNumber
 import com.stgroup.enote.utilities.replaceFragment
 import com.stgroup.enote.utilities.showToast
 import kotlinx.android.synthetic.main.fragment_auth_phone.*
@@ -46,7 +47,7 @@ class AuthPhoneFragment : Fragment(R.layout.fragment_auth_phone) {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                mPhoneNumber = s.toString()
+                mPhoneNumber = s.toString().formatPhoneNumber()
             }
 
             override fun afterTextChanged(s: Editable?) {}

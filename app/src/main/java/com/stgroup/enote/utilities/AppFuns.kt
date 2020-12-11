@@ -10,8 +10,7 @@ import com.stgroup.enote.R
 import java.text.DateFormatSymbols
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.Date
-import java.util.Calendar
+import java.util.*
 
 fun replaceFragment(fragment: Fragment, addToBackStack: Boolean = true) {
     // Use addToBackStack true if you want to add fragment to stack
@@ -79,4 +78,11 @@ fun getFormattedCurrentDate() : String {
         "$day $month $hour:$minute"
     }
 
+}
+
+fun String.formatPhoneNumber(): String {
+    return if (this.first() == '8')
+        "+7" + this.substring(1)
+    else
+        this
 }
