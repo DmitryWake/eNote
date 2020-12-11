@@ -16,6 +16,8 @@ import com.google.gson.Gson
 import com.stgroup.enote.R
 import com.stgroup.enote.database.CURRENT_UID
 import com.stgroup.enote.database.deleteCategoryInDatabase
+import com.stgroup.enote.database.saveCategoriesToDatabase
+import com.stgroup.enote.database.saveNotesToDatabase
 import com.stgroup.enote.models.CategoryModel
 import com.stgroup.enote.models.NoteModel
 import com.stgroup.enote.screens.main_menu_screen.MainMenuFragment
@@ -136,14 +138,14 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
 
     // Временно
     private fun addNote() {
-        mNoteList.add(
-            NoteModel(
-                UUID.randomUUID().toString(),
-                "New note",
-                category.id,
-                dateOfCreate = getFormattedCurrentDate()
-            )
+        val note = NoteModel(
+            UUID.randomUUID().toString(),
+            "New note",
+            category.id,
+            dateOfCreate = getFormattedCurrentDate()
         )
+        mNoteList.add(note)
+        MainMenuFragment.noteList.add(note)
         mAdapter.updateData(mNoteList)
     }
 
@@ -152,6 +154,10 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
         saveNoteList()
         if (!isCategoryDeleted)
             saveCategory()
+        if (CURRENT_UID != "null") {
+            saveCategoriesToDatabase(mutableListOf(category))
+            saveNotesToDatabase(mNoteList)
+        }
     }
 
     private fun saveNoteList() {

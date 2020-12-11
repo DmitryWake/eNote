@@ -1,7 +1,6 @@
 package com.stgroup.enote.screens.note_screen
 
 import android.annotation.SuppressLint
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.AssetManager
 import android.graphics.Typeface
@@ -20,7 +19,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.FileProvider
-import androidx.core.view.marginEnd
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -29,6 +27,7 @@ import com.google.gson.Gson
 import com.stgroup.enote.R
 import com.stgroup.enote.models.NoteModel
 import com.stgroup.enote.models.ThemeModel
+import com.stgroup.enote.screens.main_menu_screen.MainMenuFragment
 import com.stgroup.enote.utilities.*
 import com.theartofdev.edmodo.cropper.CropImage
 import kotlinx.android.synthetic.main.action_panel_note_rich_text.*
@@ -109,6 +108,7 @@ class NoteFragment(private var mNote: NoteModel) : Fragment(R.layout.fragment_no
 
     private fun restoreNote(){
         mNote.inTrash = false
+        MainMenuFragment.noteList.add(mNote)
         fragmentManager?.popBackStack()
     }
 

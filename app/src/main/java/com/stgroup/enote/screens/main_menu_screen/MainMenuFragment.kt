@@ -42,15 +42,47 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
         if (CURRENT_UID != "null") {
             synchronizeCategories {
                 compareLists(it)
-            }
-            synchronizeNotes {
-                compareNotes(it)
+
+                synchronizeNotes { downloadList ->
+                    compareNotes(downloadList)
+                }
             }
         }
     }
 
     private fun compareNotes(list: MutableList<NoteModel>) {
-
+        if (!list.isNullOrEmpty()) {
+            if (noteList.isNotEmpty()) {
+                var isEquals = true
+                val title =
+                    "Список заметок в облаке отличается от вашего"
+                list.forEach { noteModel ->
+                    if (!noteList.contains(noteModel)) {
+                        isEquals = false
+                    }
+                }
+                noteList.forEach { noteModel ->
+                    if (!list.contains(noteModel)) {
+                        isEquals = false
+                    }
+                }
+                if (!isEquals) {
+                    AlertDialog.Builder(APP_ACTIVITY)
+                        .setTitle(title)
+                        .setPositiveButton("Обновить") { _, _ ->
+                            noteList = list
+                            mAdapter.updateData(categoryList)
+                        }
+                        .setNegativeButton("Отмена") { _, _ ->
+                            deleteNotesFromDatabase(list)
+                        }
+                        .show()
+                }
+            } else {
+                noteList = list
+                mAdapter.updateData(categoryList)
+            }
+        }
     }
 
     private fun initNotes() {
@@ -67,17 +99,15 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
             it.sortBy { it.priority }
             if (categoryList.isNotEmpty()) {
                 var isEquals = true
-                var title =
-                    "Список категорий в облаке отличается от вашего\nОтличающиеся категории: "
+                val title =
+                    "Список категорий в облаке отличается от вашего"
                 it.forEach { categoryModel ->
                     if (!categoryList.contains(categoryModel)) {
-                        title += "${categoryModel.name}, "
                         isEquals = false
                     }
                 }
                 categoryList.forEach { categoryModel ->
                     if (!it.contains(categoryModel)) {
-                        title += "${categoryModel.name}, "
                         isEquals = false
                     }
                 }
@@ -89,7 +119,7 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
                             mAdapter.updateData(categoryList)
                         }
                         .setNegativeButton("Отмена") { _, _ ->
-                            deleteAllCategories(it)
+                            deleteCategoriesInDatabase(it)
                         }
                         .show()
                 }
@@ -108,7 +138,8 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
 
         var categoryName = ""
         var priority = 3
-        val dialogView = LayoutInflater.from(APP_ACTIVITY).inflate(R.layout.dialog_create_category, null)
+        val dialogView =
+            LayoutInflater.from(APP_ACTIVITY).inflate(R.layout.dialog_create_category, null)
         dialogView.findViewById<EditText>(R.id.input_name).addTextChangedListener(object :
             TextWatcher {
 
@@ -120,7 +151,7 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
 
             override fun afterTextChanged(s: Editable?) {}
         })
-        with(dialogView.findViewById<NumberPicker>(R.id.input_priority)){
+        with(dialogView.findViewById<NumberPicker>(R.id.input_priority)) {
             maxValue = 20
             minValue = 0
             value = priority
@@ -133,7 +164,13 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
             .setTitle(R.string.create_category_title)
             .setView(dialogView)
             .setPositiveButton(android.R.string.ok) { _, _ ->
-                categoryList.add(CategoryModel(UUID.randomUUID().toString(), categoryName, priority))
+                categoryList.add(
+                    CategoryModel(
+                        UUID.randomUUID().toString(),
+                        categoryName,
+                        priority
+                    )
+                )
                 categoryList.sortBy { it.priority }
                 mAdapter.updateData(categoryList)
             }
@@ -172,8 +209,9 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
     override fun onPause() {
         super.onPause()
         saveCategories()
-        if (CURRENT_UID != "null")
+        if (CURRENT_UID != "null") {
             saveCategoriesToDatabase(categoryList)
+        }
     }
 
     private fun saveCategories() {
