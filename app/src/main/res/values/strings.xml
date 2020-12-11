@@ -27,5 +27,8 @@
     <string name="edit_name_hint">New name</string>
     <string name="change_priority_title">Input new priority</string>
     <string name="change_priority_hint" translatable="false">0</string>
+    <string name="create_category_title">New category</string>
+    <string name="category_name_hint">New category name</string>
+    <string name="category_priority_text">New category priority</string>
     <string name="enter_with_phone_text">Войдите с помощью номера телефона, чтобы пользоваться синхронизацией</string>
 </resources>

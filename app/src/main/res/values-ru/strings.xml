@@ -22,5 +22,8 @@
     <string name="edit_name_title">Введите новое имя</string>
     <string name="edit_name_hint">Новое имя</string>
     <string name="change_priority_title">Введите новый приоритет</string>
+    <string name="create_category_title">Новая категория</string>
+    <string name="category_name_hint">Имя новой категории</string>
+    <string name="category_priority_text">Приоритет новой категории</string>
     <string name="enter_with_phone_text">Войдите с помощью номера телефона, чтобы пользоваться синхронизацией</string>
 </resources>

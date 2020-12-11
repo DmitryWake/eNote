@@ -4,7 +4,7 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/md_blue_grey_700</item>
+        <item name="colorAccent">@color/md_blue_grey_600</item>
         <item name="android:colorBackground">@color/colorAccent</item>
         <item name="android:textColorHint">@color/colorGrey</item>
     </style>
