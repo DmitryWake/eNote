@@ -5,11 +5,13 @@
     android:layout_width="160dp"
     android:layout_height="160dp"
     android:layout_margin="@dimen/app_margin"
-    android:background="@color/colorGrey">
+    android:background="@drawable/category_tile">
 
     <TextView
         android:id="@+id/category_name_text"
         android:text="Название категории"
+        android:textColor="@color/colorAccent"
+        android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
