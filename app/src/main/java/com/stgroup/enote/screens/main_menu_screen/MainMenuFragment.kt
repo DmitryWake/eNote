@@ -4,8 +4,8 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.NumberPicker
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -16,12 +16,11 @@ import com.stgroup.enote.R
 import com.stgroup.enote.database.*
 import com.stgroup.enote.models.CategoryModel
 import com.stgroup.enote.models.NoteModel
-import com.stgroup.enote.utilities.APP_ACTIVITY
-import com.stgroup.enote.utilities.CATEGORIES_STORAGE
-import com.stgroup.enote.utilities.NOTES_STORAGE
-import com.stgroup.enote.utilities.STORAGE_CATEGORIES_ID
+import com.stgroup.enote.objects.SearchEngine
+import com.stgroup.enote.utilities.*
 import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.fragment_main_menu.*
+import kotlinx.android.synthetic.main.toolbar_search.*
 import java.util.*
 
 class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
@@ -30,7 +29,7 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
     private lateinit var mAdapter: MainAdapter
 
     private lateinit var toolbarEditText: EditText
-    private lateinit var toolbarClearButton: Button
+    private lateinit var toolbarClearButton: ImageView
 
     companion object {
         var categoryList: MutableList<CategoryModel> = mutableListOf()
@@ -45,6 +44,7 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
             initCategories()
         if (noteList.isEmpty())
             initNotes()
+        initViews()
         initRecyclerView()
         initFunctions()
         if (CURRENT_UID != "null") {
@@ -56,6 +56,13 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
                 }
             }
         }
+
+        SEARCH_ENGINE = SearchEngine(noteList)
+    }
+
+    private fun initViews() {
+        toolbarClearButton = clear_icon
+        toolbarEditText = search_name_edit_text
     }
 
 
@@ -141,6 +148,30 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
         main_menu_btn_add.setOnClickListener {
             addCategory()
         }
+
+        toolbarClearButton.setOnClickListener {
+            toolbarEditText.editableText.delete(0, toolbarEditText.text.length)
+            toolbarClearButton.visibility = View.INVISIBLE
+        }
+
+        toolbarEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                if (s != null) {
+                    if (s.isNotEmpty()) {
+                        toolbarClearButton.visibility = View.VISIBLE
+                    } else {
+                        toolbarClearButton.visibility = View.INVISIBLE
+                    }
+                }
+            }
+
+        })
     }
 
     private fun addCategory() {

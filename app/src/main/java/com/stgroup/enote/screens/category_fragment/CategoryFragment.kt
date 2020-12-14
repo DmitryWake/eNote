@@ -4,6 +4,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.NumberPicker
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -21,6 +22,7 @@ import com.stgroup.enote.screens.main_menu_screen.MainMenuFragment
 import com.stgroup.enote.utilities.*
 import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.fragment_category.*
+import kotlinx.android.synthetic.main.toolbar_search.*
 import java.util.*
 
 class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.fragment_category) {
@@ -31,6 +33,14 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
     private lateinit var mNoteList: MutableList<NoteModel>
 
     private var isCategoryDeleted = false
+
+    private lateinit var toolbarEditText: EditText
+    private lateinit var toolbarClearButton: ImageView
+
+    private fun initViews() {
+        toolbarClearButton = clear_icon
+        toolbarEditText = search_name_edit_text
+    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         APP_ACTIVITY.menuInflater.inflate(R.menu.category_action_menu, menu)
@@ -121,6 +131,7 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
 
     override fun onStart() {
         super.onStart()
+        initViews()
         initFunctions()
         initNoteList()
         initRecyclerView()
@@ -132,6 +143,30 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
         category_btn_add.setOnClickListener {
             addNote()
         }
+
+        toolbarClearButton.setOnClickListener {
+            toolbarEditText.editableText.delete(0, toolbarEditText.text.length)
+            toolbarClearButton.visibility = View.INVISIBLE
+        }
+
+        toolbarEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                if (s != null) {
+                    if (s.isNotEmpty()) {
+                        toolbarClearButton.visibility = View.VISIBLE
+                    } else {
+                        toolbarClearButton.visibility = View.INVISIBLE
+                    }
+                }
+            }
+
+        })
     }
 
     // Временно

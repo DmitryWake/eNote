@@ -2,8 +2,11 @@ package com.stgroup.enote.utilities
 
 import android.content.SharedPreferences
 import com.stgroup.enote.MainActivity
+import com.stgroup.enote.objects.SearchEngine
 
 lateinit var APP_ACTIVITY: MainActivity
+
+lateinit var SEARCH_ENGINE: SearchEngine
 
 const val THEMES_FOLDER = "themes"
 
