@@ -3,6 +3,8 @@ package com.stgroup.enote.screens.main_menu_screen
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
+import android.view.View
+import android.widget.Button
 import android.widget.EditText
 import android.widget.NumberPicker
 import androidx.appcompat.app.AlertDialog
@@ -18,6 +20,7 @@ import com.stgroup.enote.utilities.APP_ACTIVITY
 import com.stgroup.enote.utilities.CATEGORIES_STORAGE
 import com.stgroup.enote.utilities.NOTES_STORAGE
 import com.stgroup.enote.utilities.STORAGE_CATEGORIES_ID
+import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.fragment_main_menu.*
 import java.util.*
 
@@ -26,13 +29,18 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mAdapter: MainAdapter
 
+    private lateinit var toolbarEditText: EditText
+    private lateinit var toolbarClearButton: Button
+
     companion object {
         var categoryList: MutableList<CategoryModel> = mutableListOf()
         var noteList: MutableList<NoteModel> = mutableListOf()
     }
 
+
     override fun onStart() {
         super.onStart()
+
         if (categoryList.isEmpty())
             initCategories()
         if (noteList.isEmpty())
@@ -49,6 +57,7 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
             }
         }
     }
+
 
     private fun compareNotes(list: MutableList<NoteModel>) {
         if (!list.isNullOrEmpty()) {
@@ -202,12 +211,14 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
 
     override fun onResume() {
         super.onResume()
+        APP_ACTIVITY.mToolbar.search_toolbar.visibility = View.VISIBLE
         APP_ACTIVITY.title = "eNote"
         APP_ACTIVITY.mDrawer.enableDrawer()
     }
 
     override fun onPause() {
         super.onPause()
+        APP_ACTIVITY.mToolbar.search_toolbar.visibility = View.GONE
         saveCategories()
         if (CURRENT_UID != "null") {
             saveCategoriesToDatabase(categoryList)

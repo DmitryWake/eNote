@@ -2,10 +2,7 @@ package com.stgroup.enote.screens.category_fragment
 
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
+import android.view.*
 import android.widget.EditText
 import android.widget.NumberPicker
 import androidx.appcompat.app.AlertDialog
@@ -22,6 +19,7 @@ import com.stgroup.enote.models.CategoryModel
 import com.stgroup.enote.models.NoteModel
 import com.stgroup.enote.screens.main_menu_screen.MainMenuFragment
 import com.stgroup.enote.utilities.*
+import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.fragment_category.*
 import java.util.*
 
@@ -151,6 +149,7 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
 
     override fun onPause() {
         super.onPause()
+        APP_ACTIVITY.mToolbar.search_toolbar.visibility = View.GONE
         saveNoteList()
         if (!isCategoryDeleted)
             saveCategory()
@@ -198,6 +197,7 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
 
     override fun onResume() {
         super.onResume()
+        APP_ACTIVITY.mToolbar.search_toolbar.visibility = View.VISIBLE
         APP_ACTIVITY.title = category.name
         hideKeyboard()
     }
