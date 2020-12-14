@@ -1,5 +1,6 @@
 package com.stgroup.enote.screens.category_fragment
 
+import android.annotation.SuppressLint
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
@@ -20,10 +21,14 @@ import com.stgroup.enote.models.CategoryModel
 import com.stgroup.enote.models.NoteModel
 import com.stgroup.enote.screens.main_menu_screen.MainMenuFragment
 import com.stgroup.enote.utilities.*
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.fragment_category.*
-import kotlinx.android.synthetic.main.toolbar_search.*
+import kotlinx.android.synthetic.main.toolbar_search.view.*
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.fragment_category) {
 
@@ -37,9 +42,12 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
     private lateinit var toolbarEditText: EditText
     private lateinit var toolbarClearButton: ImageView
 
+    private var searchList = listOf<NoteModel>()
+    private lateinit var searchTextObservable: Observable<String>
+
     private fun initViews() {
-        toolbarClearButton = clear_icon
-        toolbarEditText = search_name_edit_text
+        toolbarClearButton = APP_ACTIVITY.mToolbar.search_toolbar.clear_icon
+        toolbarEditText = APP_ACTIVITY.mToolbar.search_toolbar.search_name_edit_text
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -53,6 +61,36 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
             R.id.change_priority -> changePriority()
         }
         return true
+    }
+
+    private fun createTextChangeObservable(): Observable<String> {
+        val textChangeObservable = Observable.create<String> { emitter ->
+            toolbarEditText.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    s?.toString().let { emitter.onNext(it!!) }
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+                    if (s != null) {
+                        if (s.isNotEmpty()) {
+                            toolbarClearButton.visibility = View.VISIBLE
+                        } else {
+                            toolbarClearButton.visibility = View.INVISIBLE
+                        }
+                    }
+                }
+
+            })
+        }
+        return textChangeObservable.debounce(1000, TimeUnit.MILLISECONDS)
     }
 
     private fun renameCategory() {
@@ -129,6 +167,7 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
             .show()
     }
 
+    @SuppressLint("CheckResult")
     override fun onStart() {
         super.onStart()
         initViews()
@@ -137,6 +176,21 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
         initRecyclerView()
 
         setHasOptionsMenu(true)
+
+        searchTextObservable = createTextChangeObservable()
+        searchTextObservable.observeOn(AndroidSchedulers.mainThread())
+            .observeOn(Schedulers.io())
+            .map { SEARCH_ENGINE.search(it, category.id) }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                searchList = it
+                println("Succesfylly!!")
+            }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        toolbarEditText.addTextChangedListener(null)
     }
 
     private fun initFunctions() {
@@ -148,25 +202,6 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
             toolbarEditText.editableText.delete(0, toolbarEditText.text.length)
             toolbarClearButton.visibility = View.INVISIBLE
         }
-
-        toolbarEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                if (s != null) {
-                    if (s.isNotEmpty()) {
-                        toolbarClearButton.visibility = View.VISIBLE
-                    } else {
-                        toolbarClearButton.visibility = View.INVISIBLE
-                    }
-                }
-            }
-
-        })
     }
 
     // Временно

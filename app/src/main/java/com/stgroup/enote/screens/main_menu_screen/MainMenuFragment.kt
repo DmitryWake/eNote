@@ -1,5 +1,6 @@
 package com.stgroup.enote.screens.main_menu_screen
 
+import android.annotation.SuppressLint
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -18,10 +19,14 @@ import com.stgroup.enote.models.CategoryModel
 import com.stgroup.enote.models.NoteModel
 import com.stgroup.enote.objects.SearchEngine
 import com.stgroup.enote.utilities.*
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.fragment_main_menu.*
-import kotlinx.android.synthetic.main.toolbar_search.*
+import kotlinx.android.synthetic.main.toolbar_search.view.*
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
 
@@ -36,15 +41,21 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
         var noteList: MutableList<NoteModel> = mutableListOf()
     }
 
+    private var searchList = listOf<NoteModel>()
+    private lateinit var searchTextObservable: Observable<String>
 
+
+    @SuppressLint("CheckResult")
     override fun onStart() {
         super.onStart()
-
+        APP_ACTIVITY.mToolbar.search_toolbar.visibility = View.VISIBLE
         if (categoryList.isEmpty())
             initCategories()
         if (noteList.isEmpty())
             initNotes()
+
         initViews()
+
         initRecyclerView()
         initFunctions()
         if (CURRENT_UID != "null") {
@@ -58,11 +69,25 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
         }
 
         SEARCH_ENGINE = SearchEngine(noteList)
+        searchTextObservable = createTextChangeObservable()
+        searchTextObservable.observeOn(AndroidSchedulers.mainThread())
+            .observeOn(Schedulers.io())
+            .map { SEARCH_ENGINE.search(it) }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                searchList = it
+                println("Succesfylly!!")
+            }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        toolbarEditText.addTextChangedListener(null)
     }
 
     private fun initViews() {
-        toolbarClearButton = clear_icon
-        toolbarEditText = search_name_edit_text
+        toolbarClearButton = APP_ACTIVITY.mToolbar.search_toolbar.clear_icon
+        toolbarEditText = APP_ACTIVITY.mToolbar.search_toolbar.search_name_edit_text
     }
 
 
@@ -144,6 +169,36 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
         }
     }
 
+    private fun createTextChangeObservable(): Observable<String> {
+        val textChangeObservable = Observable.create<String> { emitter ->
+            toolbarEditText.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    s?.toString().let { emitter.onNext(it!!) }
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+                    if (s != null) {
+                        if (s.isNotEmpty()) {
+                            toolbarClearButton.visibility = View.VISIBLE
+                        } else {
+                            toolbarClearButton.visibility = View.INVISIBLE
+                        }
+                    }
+                }
+
+            })
+        }
+        return textChangeObservable.debounce(1000, TimeUnit.MILLISECONDS)
+    }
+
     private fun initFunctions() {
         main_menu_btn_add.setOnClickListener {
             addCategory()
@@ -153,25 +208,6 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
             toolbarEditText.editableText.delete(0, toolbarEditText.text.length)
             toolbarClearButton.visibility = View.INVISIBLE
         }
-
-        toolbarEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                if (s != null) {
-                    if (s.isNotEmpty()) {
-                        toolbarClearButton.visibility = View.VISIBLE
-                    } else {
-                        toolbarClearButton.visibility = View.INVISIBLE
-                    }
-                }
-            }
-
-        })
     }
 
     private fun addCategory() {
@@ -242,7 +278,6 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
 
     override fun onResume() {
         super.onResume()
-        APP_ACTIVITY.mToolbar.search_toolbar.visibility = View.VISIBLE
         APP_ACTIVITY.title = "eNote"
         APP_ACTIVITY.mDrawer.enableDrawer()
     }

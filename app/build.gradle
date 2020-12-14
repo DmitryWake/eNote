@@ -61,4 +61,8 @@ dependencies {
 
     implementation 'com.android.support:multidex:1.0.3'
 
+    // Rx
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.9'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
+
 }
