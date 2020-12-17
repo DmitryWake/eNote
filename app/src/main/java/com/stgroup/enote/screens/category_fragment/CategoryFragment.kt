@@ -77,7 +77,10 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
                     count: Int,
                     after: Int
                 ) {
-                    println()
+                    if (s.isNullOrEmpty()) {
+                        toolbarClearButton.visibility = View.INVISIBLE
+                        mAdapter.updateData(mNoteList)
+                    }
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -87,12 +90,16 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
                             toolbarClearButton.visibility = View.VISIBLE
                         } else {
                             toolbarClearButton.visibility = View.INVISIBLE
-                            mAdapter.updateData(mNoteList)
+
                         }
                     }
                 }
 
                 override fun afterTextChanged(s: Editable?) {
+                    if (s.isNullOrEmpty()) {
+                        toolbarClearButton.visibility = View.INVISIBLE
+                        mAdapter.updateData(mNoteList)
+                    }
                 }
 
             }
@@ -224,6 +231,7 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
         mNoteList.add(note)
         MainMenuFragment.noteList.add(note)
         mAdapter.updateData(mNoteList)
+        saveNotesToDatabase(listOf(note) as MutableList<NoteModel>)
     }
 
     override fun onPause() {

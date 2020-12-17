@@ -164,10 +164,9 @@ fun synchronizeNotes(onSuccess: (MutableList<NoteModel>) -> Unit) {
                     downloadList.add(noteModel)
                 }
             }
-            onSuccess(downloadList)
         }.addOnFailureListener {
             APP_ACTIVITY.showToast(it.message.toString())
         }
     }
-
+    onSuccess(downloadList)
 }

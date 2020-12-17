@@ -192,6 +192,11 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
                     count: Int,
                     after: Int
                 ) {
+                    if (s.isNullOrEmpty()) {
+                        toolbarClearButton.visibility = View.INVISIBLE
+                        searchRecyclerView.visibility = View.INVISIBLE
+                        mRecyclerView.visibility = View.VISIBLE
+                    }
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -208,6 +213,11 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
                 }
 
                 override fun afterTextChanged(s: Editable?) {
+                    if (s.isNullOrEmpty()) {
+                        toolbarClearButton.visibility = View.INVISIBLE
+                        searchRecyclerView.visibility = View.INVISIBLE
+                        mRecyclerView.visibility = View.VISIBLE
+                    }
                 }
 
             }
@@ -296,6 +306,7 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
 
     override fun onResume() {
         super.onResume()
+        saveNotesToDatabase(noteList)
         APP_ACTIVITY.title = "eNote"
         APP_ACTIVITY.mDrawer.enableDrawer()
     }
