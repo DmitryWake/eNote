@@ -11,6 +11,7 @@ import android.widget.NumberPicker
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.stgroup.enote.R
@@ -18,6 +19,7 @@ import com.stgroup.enote.database.*
 import com.stgroup.enote.models.CategoryModel
 import com.stgroup.enote.models.NoteModel
 import com.stgroup.enote.objects.SearchEngine
+import com.stgroup.enote.screens.main_menu_screen.search.SearchAdapter
 import com.stgroup.enote.utilities.*
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -43,6 +45,11 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
 
     private var searchList = listOf<NoteModel>()
     private lateinit var searchTextObservable: Observable<String>
+
+    private lateinit var textWatcher: TextWatcher
+
+    private lateinit var searchRecyclerView: RecyclerView
+    private lateinit var searchAdapter: SearchAdapter
 
 
     @SuppressLint("CheckResult")
@@ -76,16 +83,22 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 searchList = it
-                println("Succesfylly!!")
+                searchRecyclerView.visibility = View.VISIBLE
+                mRecyclerView.visibility = View.INVISIBLE
+                searchAdapter.updateData(searchList)
             }
     }
 
     override fun onStop() {
         super.onStop()
-        toolbarEditText.addTextChangedListener(null)
+        toolbarEditText.removeTextChangedListener(textWatcher)
     }
 
     private fun initViews() {
+        searchRecyclerView = search_notes_recycler_view
+        searchAdapter = SearchAdapter(searchList)
+        searchRecyclerView.layoutManager = LinearLayoutManager(context)
+        searchRecyclerView.adapter = searchAdapter
         toolbarClearButton = APP_ACTIVITY.mToolbar.search_toolbar.clear_icon
         toolbarEditText = APP_ACTIVITY.mToolbar.search_toolbar.search_name_edit_text
     }
@@ -171,7 +184,8 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
 
     private fun createTextChangeObservable(): Observable<String> {
         val textChangeObservable = Observable.create<String> { emitter ->
-            toolbarEditText.addTextChangedListener(object : TextWatcher {
+
+            textWatcher = object : TextWatcher {
                 override fun beforeTextChanged(
                     s: CharSequence?,
                     start: Int,
@@ -181,20 +195,24 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    s?.toString().let { emitter.onNext(it!!) }
-                }
-
-                override fun afterTextChanged(s: Editable?) {
                     if (s != null) {
                         if (s.isNotEmpty()) {
+                            emitter.onNext(s.toString())
                             toolbarClearButton.visibility = View.VISIBLE
                         } else {
                             toolbarClearButton.visibility = View.INVISIBLE
+                            searchRecyclerView.visibility = View.INVISIBLE
+                            mRecyclerView.visibility = View.VISIBLE
                         }
                     }
                 }
 
-            })
+                override fun afterTextChanged(s: Editable?) {
+                }
+
+            }
+
+            toolbarEditText.addTextChangedListener(textWatcher)
         }
         return textChangeObservable.debounce(1000, TimeUnit.MILLISECONDS)
     }

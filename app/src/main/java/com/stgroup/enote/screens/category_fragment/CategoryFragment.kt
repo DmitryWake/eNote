@@ -45,9 +45,12 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
     private var searchList = listOf<NoteModel>()
     private lateinit var searchTextObservable: Observable<String>
 
+    private lateinit var textWatcher: TextWatcher
+
     private fun initViews() {
         toolbarClearButton = APP_ACTIVITY.mToolbar.search_toolbar.clear_icon
         toolbarEditText = APP_ACTIVITY.mToolbar.search_toolbar.search_name_edit_text
+        println()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -64,31 +67,36 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
     }
 
     private fun createTextChangeObservable(): Observable<String> {
+
         val textChangeObservable = Observable.create<String> { emitter ->
-            toolbarEditText.addTextChangedListener(object : TextWatcher {
+
+            textWatcher = object : TextWatcher {
                 override fun beforeTextChanged(
                     s: CharSequence?,
                     start: Int,
                     count: Int,
                     after: Int
                 ) {
+                    println()
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    s?.toString().let { emitter.onNext(it!!) }
-                }
-
-                override fun afterTextChanged(s: Editable?) {
                     if (s != null) {
                         if (s.isNotEmpty()) {
+                            emitter.onNext(s.toString())
                             toolbarClearButton.visibility = View.VISIBLE
                         } else {
                             toolbarClearButton.visibility = View.INVISIBLE
+                            mAdapter.updateData(mNoteList)
                         }
                     }
                 }
 
-            })
+                override fun afterTextChanged(s: Editable?) {
+                }
+
+            }
+            toolbarEditText.addTextChangedListener(textWatcher)
         }
         return textChangeObservable.debounce(1000, TimeUnit.MILLISECONDS)
     }
@@ -184,13 +192,13 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 searchList = it
-                println("Succesfylly!!")
+                mAdapter.updateData(searchList as MutableList<NoteModel>)
             }
     }
 
     override fun onStop() {
         super.onStop()
-        toolbarEditText.addTextChangedListener(null)
+        toolbarEditText.removeTextChangedListener(textWatcher)
     }
 
     private fun initFunctions() {
@@ -200,6 +208,7 @@ class CategoryFragment(private var category: CategoryModel) : Fragment(R.layout.
 
         toolbarClearButton.setOnClickListener {
             toolbarEditText.editableText.delete(0, toolbarEditText.text.length)
+            mAdapter.updateData(mNoteList)
             toolbarClearButton.visibility = View.INVISIBLE
         }
     }
