@@ -26,4 +26,5 @@
     <string name="category_name_hint">Имя новой категории</string>
     <string name="category_priority_text">Приоритет новой категории</string>
     <string name="enter_with_phone_text">Войдите с помощью номера телефона, чтобы пользоваться синхронизацией</string>
+    <string name="empty_trash_toast">Корзина очищена</string>
 </resources>

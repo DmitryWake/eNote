@@ -15,7 +15,7 @@
     <string name="logged_in_text">You are logged in</string>
     <string name="phone_hint" translatable="false">+7 (999) 999 99-99</string>
     <string name="code_hint" translatable="false">0</string>
-    <string name="app_version" translatable="false">0.1</string>
+    <string name="app_version" translatable="false">0.99 alpha</string>
     <string name="u_text" translatable="false"><u>U</u></string>
     <string name="settings">Settings</string>
     <string name="delete">Delete</string>
@@ -30,5 +30,6 @@
     <string name="create_category_title">New category</string>
     <string name="category_name_hint">New category name</string>
     <string name="category_priority_text">New category priority</string>
-    <string name="enter_with_phone_text">Войдите с помощью номера телефона, чтобы пользоваться синхронизацией</string>
+    <string name="enter_with_phone_text">Sing in with your phone number to use synchronization</string>
+    <string name="empty_trash_toast">The trash has been emptied</string>
 </resources>

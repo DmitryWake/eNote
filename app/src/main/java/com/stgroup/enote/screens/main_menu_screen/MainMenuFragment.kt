@@ -55,6 +55,7 @@ class MainMenuFragment : Fragment(R.layout.fragment_main_menu) {
     @SuppressLint("CheckResult")
     override fun onStart() {
         super.onStart()
+        hideKeyboard()
         APP_ACTIVITY.mToolbar.search_toolbar.visibility = View.VISIBLE
         if (categoryList.isEmpty())
             initCategories()

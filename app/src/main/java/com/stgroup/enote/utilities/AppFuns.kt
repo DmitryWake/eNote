@@ -25,8 +25,13 @@ fun replaceFragment(fragment: Fragment, addToBackStack: Boolean = true) {
 }
 
 // Method to make a toast. Use it with your context
-fun Context.showToast(message: CharSequence) =
+fun Context.showToast(message: CharSequence) {
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+}
+// For passing in string resources:
+fun Context.showToast(message: Int) {
+    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+}
 
 
 // Restart activity function

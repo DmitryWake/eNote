@@ -11,12 +11,12 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
 import com.stgroup.enote.R
+import com.stgroup.enote.screens.main_menu_screen.MainMenuFragment
 import com.stgroup.enote.screens.rubbish_fragment.RubbishFragment
 import com.stgroup.enote.screens.settings_screen.SettingsFragment
-import com.stgroup.enote.screens.main_menu_screen.MainMenuFragment
 import com.stgroup.enote.utilities.APP_ACTIVITY
-import com.stgroup.enote.utilities.showToast
 import com.stgroup.enote.utilities.replaceFragment
+import com.stgroup.enote.utilities.showToast
 
 
 class AppDrawer {
@@ -24,6 +24,8 @@ class AppDrawer {
     private lateinit var mDrawer: Drawer
     private lateinit var mHeader: AccountHeader
     private lateinit var mDrawerLayout: DrawerLayout
+
+    private var onVersionClick: Int = 0
 
     fun create() {
         createHeader()
@@ -33,7 +35,7 @@ class AppDrawer {
 
     private fun createHeader() {
         mHeader = AccountHeaderBuilder().withActivity(APP_ACTIVITY)
-            .withHeaderBackground(R.drawable.header).build()
+            .withHeaderBackground(R.drawable.logo).build()
     }
 
     private fun createDrawer() {
@@ -50,13 +52,18 @@ class AppDrawer {
                 PrimaryDrawerItem().withIdentifier(300).withName(R.string.settings_icon)
                     .withIcon(R.drawable.ic_settings),
                 SecondaryDrawerItem().withIdentifier(301).withName(R.string.share_icon)
-                    .withIcon(R.drawable.ic_share),
+                    .withIcon(R.drawable.ic_share).withSelectable(false),
                 DividerDrawerItem(),
-                SecondaryDrawerItem().withIdentifier(400).withName(R.string.version_icon).withBadge(R.string.app_version)
-                    .withIcon(R.drawable.ic_info).withEnabled(false)
-            ).withOnDrawerItemClickListener(object: Drawer.OnDrawerItemClickListener {
-                override fun onItemClick(view : View?, position : Int, drawerItem : IDrawerItem<*>) : Boolean
-                {
+                SecondaryDrawerItem().withIdentifier(400).withName(R.string.version_icon)
+                    .withBadge(R.string.app_version)
+                    .withIcon(R.drawable.ic_info)
+                    .withSelectable(false)
+            ).withOnDrawerItemClickListener(object : Drawer.OnDrawerItemClickListener {
+                override fun onItemClick(
+                    view: View?,
+                    position: Int,
+                    drawerItem: IDrawerItem<*>
+                ): Boolean {
                     chooseItem(position)
                     return false
                 }
@@ -64,13 +71,14 @@ class AppDrawer {
             .build()
     }
 
-    private fun chooseItem(position : Int) {
+    private fun chooseItem(position: Int) {
 
         when (position) {
-            1 -> replaceFragment(MainMenuFragment())
-            3 -> replaceFragment(RubbishFragment())
-            5 -> replaceFragment(SettingsFragment())
+            1 -> replaceFragment(MainMenuFragment(), false)
+            3 -> replaceFragment(RubbishFragment(), false)
+            5 -> replaceFragment(SettingsFragment(), false)
             6 -> APP_ACTIVITY.showToast("Sharing is good!")
+            8 -> onVersionClick()
         }
     }
 
@@ -89,6 +97,13 @@ class AppDrawer {
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
         APP_ACTIVITY.mToolbar.setNavigationOnClickListener {
             mDrawer.openDrawer()
+        }
+    }
+
+    private fun onVersionClick() {
+        onVersionClick = (onVersionClick + 1) % 5
+        if (onVersionClick == 0) {
+            APP_ACTIVITY.showToast("ORGAYNIZER))))))")
         }
     }
 

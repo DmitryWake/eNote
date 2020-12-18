@@ -32,13 +32,10 @@ class RubbishFragment : Fragment(R.layout.fragment_rubbish) {
 
     override fun onStart() {
         super.onStart()
-        initFunctions()
         initNoteList()
         initRecyclerView()
         setHasOptionsMenu(true)
     }
-
-    private fun initFunctions() {}
 
     private fun initRecyclerView() {
         mRecyclerView = rubbish_recycler_view
@@ -62,9 +59,13 @@ class RubbishFragment : Fragment(R.layout.fragment_rubbish) {
     }
 
     private fun emptyTrash(){
-        APP_ACTIVITY.showToast("- Знаете как будут звать дочку Ксении Собчак?\n" +
-                "- Как?\n" +
-                "- Пони.\n")
+
+        mNoteList.forEach {
+            NOTES_STORAGE.edit().remove("$STORAGE_NOTES_ID:${it.id}").apply()
+        }
+        mNoteList.clear()
+        mAdapter.updateData(mNoteList)
+        APP_ACTIVITY.showToast(R.string.empty_trash_toast)
     }
 
     private fun saveNoteList() {
@@ -77,6 +78,7 @@ class RubbishFragment : Fragment(R.layout.fragment_rubbish) {
     override fun onResume() {
         super.onResume()
         APP_ACTIVITY.title = "Rubbish"
+        APP_ACTIVITY.mDrawer.enableDrawer()
         hideKeyboard()
     }
 
