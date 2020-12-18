@@ -77,6 +77,7 @@ class RubbishFragment : Fragment(R.layout.fragment_rubbish) {
     override fun onResume() {
         super.onResume()
         APP_ACTIVITY.title = "Rubbish"
+        APP_ACTIVITY.mDrawer.enableDrawer()
         hideKeyboard()
     }
 
