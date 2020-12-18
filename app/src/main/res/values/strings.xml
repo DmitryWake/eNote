@@ -31,4 +31,5 @@
     <string name="category_name_hint">New category name</string>
     <string name="category_priority_text">New category priority</string>
     <string name="enter_with_phone_text">Sing in with your phone number to use synchronization</string>
+    <string name="empty_trash_toast">The trash has been emptied</string>
 </resources>

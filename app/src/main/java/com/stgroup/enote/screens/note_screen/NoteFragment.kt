@@ -158,8 +158,7 @@ class NoteFragment(private var mNote: NoteModel) : Fragment(R.layout.fragment_no
         else{
             mNote.inTrash = true
         }
-            fragmentManager?.popBackStack()
-
+        fragmentManager?.popBackStack()
     }
 
     override fun onStart() {
